@@ -41,8 +41,8 @@ export function CreateAccountScreen({ navigation }: Props) {
   async function handleContinue() {
     setLoading(true);
     try {
-      const user = await signUpWithEmail(name.trim(), email.trim().toLowerCase(), password);
-      navigation.navigate('EnterPhone', { userId: user.id });
+      await signUpWithEmail(name.trim(), email.trim().toLowerCase(), password);
+      navigation.navigate('CheckEmail', { email: email.trim().toLowerCase(), mode: 'signup' });
     } catch (err: any) {
       Alert.alert('Error', err.message ?? 'Could not create account. Please try again.');
     } finally {
@@ -57,15 +57,37 @@ export function CreateAccountScreen({ navigation }: Props) {
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <Text style={styles.title}>Create your account</Text>
           <View style={styles.fields}>
-            <Field label="Full name" value={name} onChangeText={setName} placeholder="Your name" autoComplete="name" autoCapitalize="words" />
-            <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@email.com" keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
-            <Field label="Password" value={password} onChangeText={setPassword} placeholder="8+ characters" secureTextEntry autoComplete="new-password" />
+            <Field
+              label="Full name"
+              value={name}
+              onChangeText={setName}
+              placeholder="Your name"
+              autoComplete="name"
+              autoCapitalize="words"
+            />
+            <Field
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="you@email.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+            />
+            <Field
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              placeholder="8+ characters"
+              secureTextEntry
+              autoComplete="new-password"
+            />
           </View>
           <PrimaryBtn label="Continue" onPress={handleContinue} disabled={!isValid} loading={loading} />
           <Text style={styles.terms}>
             By continuing you agree to Glamr's{' '}
-            <Text style={styles.link}>Terms of Service</Text> and{' '}
-            <Text style={styles.link}>Privacy Policy</Text>.
+            <Text style={styles.link} onPress={() => navigation.navigate('TermsOfService')}>Terms of Service</Text> and{' '}
+            <Text style={styles.link} onPress={() => navigation.navigate('PrivacyPolicy')}>Privacy Policy</Text>.
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
