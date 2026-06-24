@@ -1,8 +1,9 @@
 export type RootStackParamList = {
   Welcome: undefined;
-  AccountType: undefined;
-  CreateAccount: { role: 'pro' | 'client' };
-  VerifyPhone: { role: 'pro' | 'client' };
+  CreateAccount: undefined;
+  EnterPhone: { userId: string };
+  VerifyPhone: { userId: string; phone: string };
+  ChooseRole: { userId: string };
   Specialty: undefined;
   BusinessDetails: undefined;
   ServicesAndPricing: undefined;
