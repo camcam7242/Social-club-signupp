@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
 import { PrimaryBtn } from '@/components/PrimaryBtn';
@@ -43,10 +43,12 @@ export function WelcomeScreen({ navigation }: Props) {
         </View>
         <View style={styles.actions}>
           <PrimaryBtn label="Get started" onPress={() => navigation.navigate('CreateAccount')} />
-          <Text style={styles.login}>
-            Already have an account?{' '}
-            <Text style={styles.loginLink}>Sign in</Text>
-          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+            <Text style={styles.login}>
+              Already have an account?{' '}
+              <Text style={styles.loginLink}>Sign in</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
