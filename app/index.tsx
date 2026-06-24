@@ -7,9 +7,13 @@ import { RootStackParamList } from '@/navigation/types';
 
 import { WelcomeScreen } from '@/screens/onboarding/WelcomeScreen';
 import { CreateAccountScreen } from '@/screens/onboarding/CreateAccountScreen';
-import { EnterPhoneScreen } from '@/screens/onboarding/EnterPhoneScreen';
-import { VerifyPhoneScreen } from '@/screens/onboarding/VerifyPhoneScreen';
+import { SignInScreen } from '@/screens/onboarding/SignInScreen';
+import { ForgotPasswordScreen } from '@/screens/onboarding/ForgotPasswordScreen';
+import { CheckEmailScreen } from '@/screens/onboarding/CheckEmailScreen';
 import { ChooseRoleScreen } from '@/screens/onboarding/ChooseRoleScreen';
+import { DeleteAccountScreen } from '@/screens/onboarding/DeleteAccountScreen';
+import { PrivacyPolicyScreen } from '@/screens/onboarding/PrivacyPolicyScreen';
+import { TermsOfServiceScreen } from '@/screens/onboarding/TermsOfServiceScreen';
 import { SpecialtyScreen } from '@/screens/onboarding/SpecialtyScreen';
 import { BusinessDetailsScreen } from '@/screens/onboarding/BusinessDetailsScreen';
 import { AllSetScreen } from '@/screens/onboarding/AllSetScreen';
@@ -21,6 +25,7 @@ import { MembershipScreen } from '@/screens/onboarding/MembershipScreen';
 import { ProHomeScreen } from '@/screens/pro/ProHomeScreen';
 import { EarningsScreen } from '@/screens/pro/EarningsScreen';
 import { ClientHomeScreen } from '@/screens/client/ClientHomeScreen';
+import { MapScreen } from '@/screens/client/MapScreen';
 import { ProProfileScreen } from '@/screens/booking/ProProfileScreen';
 import { PickTimeScreen } from '@/screens/booking/PickTimeScreen';
 import { CancellationPolicyScreen } from '@/screens/booking/CancellationPolicyScreen';
@@ -39,9 +44,13 @@ export default function App() {
           <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Welcome">
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
             <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
-            <Stack.Screen name="EnterPhone" component={EnterPhoneScreen} />
-            <Stack.Screen name="VerifyPhone" component={VerifyPhoneScreen} />
+            <Stack.Screen name="SignIn" component={SignInScreen} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+            <Stack.Screen name="CheckEmail" component={CheckEmailScreen} />
             <Stack.Screen name="ChooseRole" component={ChooseRoleScreen} />
+            <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
+            <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+            <Stack.Screen name="TermsOfService" component={TermsOfServiceScreen} />
             <Stack.Screen name="Specialty" component={SpecialtyScreen} />
             <Stack.Screen name="BusinessDetails" component={BusinessDetailsScreen} />
             <Stack.Screen name="ServicesAndPricing" component={ServicesAndPricingScreen} />
@@ -53,6 +62,7 @@ export default function App() {
             <Stack.Screen name="ProHome" component={ProHomeScreen} />
             <Stack.Screen name="Earnings" component={EarningsScreen} />
             <Stack.Screen name="ClientHome" component={ClientHomeScreen} />
+            <Stack.Screen name="Map" component={MapScreen} />
             <Stack.Screen name="ProProfile" component={ProProfileScreen} />
             <Stack.Screen name="PickTime" component={PickTimeScreen} />
             <Stack.Screen name="CancellationPolicy" component={CancellationPolicyScreen} />
