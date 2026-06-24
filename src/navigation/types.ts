@@ -3,7 +3,6 @@ export type RootStackParamList = {
   AccountType: undefined;
   CreateAccount: { role: 'pro' | 'client' };
   VerifyPhone: { role: 'pro' | 'client' };
-  // Pro onboarding
   Specialty: undefined;
   BusinessDetails: undefined;
   ServicesAndPricing: undefined;
@@ -13,10 +12,15 @@ export type RootStackParamList = {
   Membership: undefined;
   PromoUnlocked: undefined;
   ProAllSet: undefined;
-  // Pro main app
   ProHome: undefined;
-  // Client onboarding
+  Earnings: undefined;
   ClientSignUp: undefined;
-  // Client main app
   ClientHome: undefined;
+  ProProfile: undefined;
+  PickTime: undefined;
+  CancellationPolicy: undefined;
+  ConfirmBooking: undefined;
+  Chat: undefined;
+  AddTip: undefined;
+  RatePro: undefined;
 };
