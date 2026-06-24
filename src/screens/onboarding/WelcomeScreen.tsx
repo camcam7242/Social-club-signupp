@@ -42,7 +42,7 @@ export function WelcomeScreen({ navigation }: Props) {
           </Text>
         </View>
         <View style={styles.actions}>
-          <PrimaryBtn label="Get started" onPress={() => navigation.navigate('AccountType')} />
+          <PrimaryBtn label="Get started" onPress={() => navigation.navigate('CreateAccount')} />
           <Text style={styles.login}>
             Already have an account?{' '}
             <Text style={styles.loginLink}>Sign in</Text>
