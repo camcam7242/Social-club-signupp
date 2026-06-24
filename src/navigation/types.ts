@@ -1,8 +1,9 @@
 export type RootStackParamList = {
   Welcome: undefined;
   CreateAccount: undefined;
-  EnterPhone: { userId: string };
-  VerifyPhone: { userId: string; phone: string };
+  SignIn: undefined;
+  ForgotPassword: undefined;
+  CheckEmail: { email: string; mode: 'signup' | 'reset' };
   ChooseRole: { userId: string };
   Specialty: undefined;
   BusinessDetails: undefined;
@@ -15,8 +16,8 @@ export type RootStackParamList = {
   ProAllSet: undefined;
   ProHome: undefined;
   Earnings: undefined;
-  ClientSignUp: undefined;
   ClientHome: undefined;
+  Map: undefined;
   ProProfile: undefined;
   PickTime: undefined;
   CancellationPolicy: undefined;
@@ -24,4 +25,7 @@ export type RootStackParamList = {
   Chat: undefined;
   AddTip: undefined;
   RatePro: undefined;
+  DeleteAccount: undefined;
+  PrivacyPolicy: undefined;
+  TermsOfService: undefined;
 };
