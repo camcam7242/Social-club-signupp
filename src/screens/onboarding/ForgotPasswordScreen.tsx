@@ -35,22 +35,10 @@ export function ForgotPasswordScreen({ navigation }: Props) {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <Text style={styles.title}>Forgot your password?</Text>
-          <Text style={styles.sub}>
-            Enter your email and we'll send you a link to reset your password.
-          </Text>
+          <Text style={styles.sub}>Enter your email and we'll send you a link to reset your password.</Text>
           <View style={styles.fieldWrap}>
             <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              placeholder="you@email.com"
-              placeholderTextColor={colors.muted}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoFocus
-            />
+            <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="you@email.com" placeholderTextColor={colors.muted} keyboardType="email-address" autoCapitalize="none" autoComplete="email" autoFocus />
           </View>
           <PrimaryBtn label="Send reset link" onPress={handleSend} disabled={!isValid} loading={loading} />
         </ScrollView>
@@ -66,12 +54,5 @@ const styles = StyleSheet.create({
   sub: { ...typography.body, color: colors.muted, lineHeight: 22, marginTop: -8 },
   fieldWrap: { gap: 6 },
   label: { ...typography.label, color: colors.body },
-  input: {
-    height: 52,
-    borderRadius: radius.input,
-    backgroundColor: colors.field,
-    paddingHorizontal: 16,
-    ...typography.body,
-    color: colors.ink,
-  },
+  input: { height: 52, borderRadius: radius.input, backgroundColor: colors.field, paddingHorizontal: 16, ...typography.body, color: colors.ink },
 });
