@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View, Text, StyleSheet, SafeAreaView, Alert, TouchableOpacity,
-} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Alert, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
 import { TopBar } from '@/components/TopBar';
@@ -46,40 +44,22 @@ export function DeleteAccountScreen({ navigation }: Props) {
       <TopBar title="Delete account" onBack={() => navigation.goBack()} />
       <View style={styles.container}>
         <View style={styles.content}>
-          <View style={styles.iconWrap}>
-            <Text style={styles.iconText}>⚠️</Text>
-          </View>
+          <View style={styles.iconWrap}><Text style={styles.iconText}>⚠️</Text></View>
           <Text style={styles.title}>Delete your account</Text>
-          <Text style={styles.body}>
-            Deleting your account is permanent and cannot be undone. All of your data will be removed, including:
-          </Text>
+          <Text style={styles.body}>Deleting your account is permanent and cannot be undone. All of your data will be removed, including:</Text>
           <View style={styles.list}>
-            {[
-              'Your profile and account information',
-              'All bookings and appointments',
-              'Messages and chat history',
-              'Reviews and ratings',
-              'Payment history',
-            ].map((item) => (
+            {['Your profile and account information','All bookings and appointments','Messages and chat history','Reviews and ratings','Payment history'].map((item) => (
               <View key={item} style={styles.listItem}>
                 <View style={styles.bullet} />
                 <Text style={styles.listText}>{item}</Text>
               </View>
             ))}
           </View>
-          <Text style={styles.note}>
-            If you have any active bookings, please cancel them before deleting your account.
-          </Text>
+          <Text style={styles.note}>If you have any active bookings, please cancel them before deleting your account.</Text>
         </View>
         <View style={styles.actions}>
-          <TouchableOpacity
-            style={[styles.deleteBtn, loading && styles.deleteBtnDisabled]}
-            onPress={handleDelete}
-            disabled={loading}
-          >
-            <Text style={styles.deleteBtnText}>
-              {loading ? 'Deleting...' : 'Delete my account'}
-            </Text>
+          <TouchableOpacity style={[styles.deleteBtn, loading && styles.deleteBtnDisabled]} onPress={handleDelete} disabled={loading}>
+            <Text style={styles.deleteBtnText}>{loading ? 'Deleting...' : 'Delete my account'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Text style={styles.cancel}>Cancel</Text>
