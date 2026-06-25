@@ -12,10 +12,7 @@ function Logo() {
     <View style={logo.wrap}>
       {[0,60,120,180,240,300].map((deg, i) => (
         <View key={i} style={[logo.dot, {
-          transform: [
-            { rotate: `${deg}deg` },
-            { translateX: 14 },
-          ],
+          transform: [{ rotate: `${deg}deg` }, { translateX: 14 }],
         }]} />
       ))}
       <View style={logo.centerDot} />
