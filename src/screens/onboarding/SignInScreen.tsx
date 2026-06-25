@@ -66,23 +66,8 @@ export function SignInScreen({ navigation }: Props) {
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <Text style={styles.title}>Welcome back</Text>
           <View style={styles.fields}>
-            <Field
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="you@email.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-            />
-            <Field
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Your password"
-              secureTextEntry
-              autoComplete="current-password"
-            />
+            <Field label="Email" value={email} onChangeText={setEmail} placeholder="you@email.com" keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
+            <Field label="Password" value={password} onChangeText={setPassword} placeholder="Your password" secureTextEntry autoComplete="current-password" />
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={styles.forgot}>Forgot password?</Text>
@@ -90,9 +75,7 @@ export function SignInScreen({ navigation }: Props) {
           <PrimaryBtn label="Sign in" onPress={handleSignIn} disabled={!isValid} loading={loading} />
           <Text style={styles.bottom}>
             Don't have an account?{' '}
-            <Text style={styles.link} onPress={() => navigation.navigate('CreateAccount')}>
-              Create one
-            </Text>
+            <Text style={styles.link} onPress={() => navigation.navigate('CreateAccount')}>Create one</Text>
           </Text>
         </ScrollView>
       </KeyboardAvoidingView>
