@@ -6,6 +6,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { jobApi, mechanicApi } from '../../services/api';
 import { Job, JobStatus } from '../../types';
+import { useRouter } from 'expo-router';
 import { useMechanicLocationBroadcast } from '../../hooks/useMechanicLocationBroadcast';
 
 const NEXT_STATUS: Partial<Record<JobStatus, { status: JobStatus; label: string; color: string }>> = {
@@ -22,6 +23,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 export default function ActiveJobScreen() {
   const qc = useQueryClient();
+  const router = useRouter();
 
   const { data: jobs = [], isLoading, refetch } = useQuery<(Job & { price: number; service_type: string; year: number; make: string; model: string; location_address?: string })[]>({
     queryKey: ['my-jobs'],
@@ -58,6 +60,15 @@ export default function ActiveJobScreen() {
         <Text style={styles.vehicle}>{job.year} {job.make} {job.model}</Text>
         {job.location_address && <Text style={styles.location}>📍 {job.location_address}</Text>}
         <Text style={styles.price}>💰 ${parseFloat(job.price as any).toFixed(2)}</Text>
+
+        {job.status === 'completed' && (
+          <TouchableOpacity
+            style={[styles.actionBtn, { backgroundColor: '#0f172a', marginBottom: 8 }]}
+            onPress={() => router.push(`/tap-pay/${job.id}`)}
+          >
+            <Text style={styles.actionBtnText}>💳  Collect Payment (Tap to Pay)</Text>
+          </TouchableOpacity>
+        )}
 
         {isActive && next && (
           <TouchableOpacity

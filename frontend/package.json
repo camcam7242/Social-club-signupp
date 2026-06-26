@@ -34,7 +34,8 @@
     "@hookform/resolvers": "^3.3.2",
     "zod": "^3.22.4",
     "date-fns": "^3.0.6",
-    "@expo/vector-icons": "^14.0.0"
+    "@expo/vector-icons": "^14.0.0",
+    "@stripe/stripe-terminal-react-native": "1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
