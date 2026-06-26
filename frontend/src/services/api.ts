@@ -91,6 +91,49 @@ export const reviewApi = {
   forMechanic: (mechanicId: string) => api.get(`/reviews/mechanic/${mechanicId}`),
 };
 
+// Push Notifications
+export const pushApi = {
+  register: (token: string, platform: string) =>
+    api.post('/push/register', { token, platform }),
+  unregister: (token: string) =>
+    api.delete('/push/unregister', { data: { token } }),
+};
+
+// Chat
+export const chatApi = {
+  getMessages: (jobId: string) => api.get(`/jobs/${jobId}/chat`),
+  sendMessage: (jobId: string, message: string) =>
+    api.post(`/jobs/${jobId}/chat`, { message }),
+};
+
+// Documents
+export const documentApi = {
+  list: () => api.get('/mechanics/documents'),
+  upload: (doc_type: string, file_url: string, file_name: string) =>
+    api.post('/mechanics/documents', { doc_type, file_url, file_name }),
+  remove: (id: string) => api.delete(`/mechanics/documents/${id}`),
+};
+
+// Availability
+export const availabilityApi = {
+  list: () => api.get('/mechanics/availability'),
+  create: (start_at: string, end_at: string, reason?: string) =>
+    api.post('/mechanics/availability', { start_at, end_at, reason }),
+  remove: (id: string) => api.delete(`/mechanics/availability/${id}`),
+};
+
+// Disputes
+export const disputeApi = {
+  file: (jobId: string, reason: string, details?: string) =>
+    api.post(`/jobs/${jobId}/dispute`, { reason, details }),
+};
+
+// Job Notes
+export const jobNotesApi = {
+  list: (jobId: string) => api.get(`/jobs/${jobId}/notes`),
+  add: (jobId: string, note: string) => api.post(`/jobs/${jobId}/notes`, { note }),
+};
+
 // Extended auth
 export const authExtApi = {
   forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Alert,
-  ActivityIndicator, ScrollView,
+  ActivityIndicator, ScrollView, TextInput,
 } from 'react-native';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { api } from '../../services/api';
+import { api, disputeApi, jobNotesApi } from '../../services/api';
 import { useSocketStore } from '../../store/socketStore';
+import { useAuthStore } from '../../store/authStore';
 import { Job, JobStatus } from '../../types';
 
 const STEPS: { status: JobStatus; label: string; icon: string }[] = [
@@ -26,7 +27,9 @@ export default function JobTrackingScreen() {
   const router = useRouter();
   const qc = useQueryClient();
   const { socket, joinJob } = useSocketStore();
+  const user = useAuthStore((s) => s.user);
   const [liveStatus, setLiveStatus] = useState<JobStatus | null>(null);
+  const [noteText, setNoteText] = useState('');
 
   const { data: job, isLoading } = useQuery<Job & { price?: number }>({
     queryKey: ['job', id],
@@ -68,6 +71,47 @@ export default function JobTrackingScreen() {
   }, [socket, id]);
 
 
+
+  const { data: notes = [] } = useQuery<{ id: string; note: string; author_name: string; author_role: string; created_at: string }[]>({
+    queryKey: ['job-notes', id],
+    queryFn: async () => (await jobNotesApi.list(id)).data,
+  });
+
+  const addNoteMutation = useMutation({
+    mutationFn: (note: string) => jobNotesApi.add(id, note),
+    onSuccess: () => {
+      setNoteText('');
+      qc.invalidateQueries({ queryKey: ['job-notes', id] });
+    },
+    onError: (err: any) => Alert.alert('Error', err.response?.data?.error || 'Failed to add note'),
+  });
+
+  const fileDisputeMutation = useMutation({
+    mutationFn: ({ reason, details }: { reason: string; details?: string }) =>
+      disputeApi.file(id, reason, details),
+    onSuccess: () => {
+      Alert.alert('Dispute Filed', 'Our team will review your issue within 24 hours.');
+    },
+    onError: (err: any) => Alert.alert('Error', err.response?.data?.error || 'Failed to file dispute'),
+  });
+
+  const handleFileDispute = () => {
+    Alert.prompt(
+      '⚠️ Report an Issue',
+      'Please describe the issue with this job:',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Submit',
+          onPress: (reason) => {
+            if (!reason?.trim()) return;
+            fileDisputeMutation.mutate({ reason: reason.trim() });
+          },
+        },
+      ],
+      'plain-text'
+    );
+  };
 
   if (isLoading) return <ActivityIndicator style={{ flex: 1 }} />;
   if (!job) return <Text style={styles.empty}>Job not found.</Text>;
@@ -124,6 +168,14 @@ export default function JobTrackingScreen() {
         </View>
       )}
 
+      {/* Chat with Mechanic */}
+      <TouchableOpacity
+        style={styles.chatBtn}
+        onPress={() => router.push(`/chat/${id}`)}
+      >
+        <Text style={styles.chatBtnText}>💬 Chat with Mechanic</Text>
+      </TouchableOpacity>
+
       {currentStatus === 'completed' && (
         <View style={styles.paySection}>
           <Text style={styles.payTitle}>Ready to Pay</Text>
@@ -134,8 +186,14 @@ export default function JobTrackingScreen() {
           >
             <Text style={styles.payBtnText}>Pay Now  →</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push(`/receipt/${id}`)} style={styles.receiptBtn}>
+            <Text style={styles.receiptBtnText}>📄 View Receipt</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push(`/review/${id}`)} style={styles.skipPay}>
             <Text style={styles.skipPayText}>Leave a Review</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleFileDispute} style={styles.disputeBtn} disabled={fileDisputeMutation.isPending}>
+            <Text style={styles.disputeBtnText}>⚠️ Report an Issue</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -159,6 +217,42 @@ export default function JobTrackingScreen() {
           <Text style={styles.infoText}>Work is in progress. You'll be notified when it's done.</Text>
         </View>
       )}
+
+      {/* Job Notes */}
+      <View style={styles.notesSection}>
+        <Text style={styles.notesSectionTitle}>Notes</Text>
+        {notes.length === 0 && (
+          <Text style={styles.notesEmpty}>No notes yet.</Text>
+        )}
+        {notes.map((n) => (
+          <View key={n.id} style={styles.noteCard}>
+            <Text style={styles.noteAuthor}>
+              {n.author_role === 'mechanic' ? '🔧 Mechanic' : '👤 Customer'}: {n.author_name}
+            </Text>
+            <Text style={styles.noteText}>{n.note}</Text>
+            <Text style={styles.noteTime}>
+              {new Date(n.created_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            </Text>
+          </View>
+        ))}
+        <View style={styles.addNoteRow}>
+          <TextInput
+            style={styles.noteInput}
+            value={noteText}
+            onChangeText={setNoteText}
+            placeholder="Add a note..."
+            placeholderTextColor="#9ca3af"
+            multiline
+          />
+          <TouchableOpacity
+            style={[styles.addNoteBtn, !noteText.trim() && styles.addNoteBtnDisabled]}
+            onPress={() => { if (noteText.trim()) addNoteMutation.mutate(noteText.trim()); }}
+            disabled={!noteText.trim() || addNoteMutation.isPending}
+          >
+            <Text style={styles.addNoteBtnText}>Add</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </ScrollView>
   );
 }
@@ -212,4 +306,34 @@ const styles = StyleSheet.create({
   },
   liveMapBtnText: { color: '#10b981', fontWeight: '600', fontSize: 15 },
   empty: { textAlign: 'center', marginTop: 60, color: '#9ca3af', fontSize: 15 },
+  chatBtn: {
+    backgroundColor: '#eff6ff', borderWidth: 1.5, borderColor: '#1a56db',
+    borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 16,
+  },
+  chatBtnText: { color: '#1a56db', fontWeight: '600', fontSize: 15 },
+  receiptBtn: { marginTop: 10 },
+  receiptBtnText: { color: '#374151', fontSize: 14, textAlign: 'center' },
+  disputeBtn: { marginTop: 14 },
+  disputeBtnText: { color: '#ef4444', fontSize: 13, textAlign: 'center' },
+  notesSection: {
+    backgroundColor: '#fff', borderRadius: 16, padding: 16, marginBottom: 24,
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+  },
+  notesSectionTitle: { fontSize: 16, fontWeight: '700', color: '#111', marginBottom: 10 },
+  notesEmpty: { color: '#9ca3af', fontSize: 13, marginBottom: 10 },
+  noteCard: {
+    backgroundColor: '#f9fafb', borderRadius: 10, padding: 12, marginBottom: 8,
+    borderLeftWidth: 3, borderLeftColor: '#1a56db',
+  },
+  noteAuthor: { fontSize: 11, fontWeight: '700', color: '#6b7280', marginBottom: 4 },
+  noteText: { fontSize: 14, color: '#374151' },
+  noteTime: { fontSize: 10, color: '#9ca3af', marginTop: 4 },
+  addNoteRow: { flexDirection: 'row', gap: 8, marginTop: 8, alignItems: 'flex-end' },
+  noteInput: {
+    flex: 1, backgroundColor: '#f3f4f6', borderRadius: 10, padding: 10,
+    fontSize: 14, color: '#111', minHeight: 42,
+  },
+  addNoteBtn: { backgroundColor: '#1a56db', borderRadius: 10, padding: 10, justifyContent: 'center' },
+  addNoteBtnDisabled: { backgroundColor: '#93c5fd' },
+  addNoteBtnText: { color: '#fff', fontWeight: '700', fontSize: 13 },
 });
