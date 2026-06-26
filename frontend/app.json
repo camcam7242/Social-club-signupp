@@ -18,7 +18,8 @@
         "NSLocationWhenInUseUsageDescription": "We need your location to find nearby mechanics.",
         "NSCameraUsageDescription": "Take photos of your vehicle issue.",
         "NSPhotoLibraryUsageDescription": "Upload photos of your vehicle issue."
-      }
+      },
+      "merchantId": "merchant.com.mechanicmarketplace"
     },
     "android": {
       "adaptiveIcon": {
@@ -42,6 +43,13 @@
         {
           "icon": "./assets/notification-icon.png",
           "color": "#1a56db"
+        }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.mechanicmarketplace",
+          "enableGooglePay": true
         }
       ]
     ],

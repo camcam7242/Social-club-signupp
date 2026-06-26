@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import { useAuthStore } from '../src/store/authStore';
 import { useSocketStore } from '../src/store/socketStore';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000 } },
 });
+
+const STRIPE_KEY = process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
 
 export default function RootLayout() {
   const loadUser = useAuthStore((s) => s.loadUser);
@@ -21,11 +24,22 @@ export default function RootLayout() {
   }, [isAuthenticated]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-    </QueryClientProvider>
+    <StripeProvider
+      publishableKey={STRIPE_KEY}
+      merchantIdentifier="merchant.com.mechanicmarketplace"
+      urlScheme="mechanic-marketplace"
+    >
+      <QueryClientProvider client={queryClient}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="requests/[id]" options={{ headerShown: true, title: 'Request Details' }} />
+          <Stack.Screen name="jobs/[id]" options={{ headerShown: true, title: 'Job Status' }} />
+          <Stack.Screen name="track/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="pay/[jobId]" options={{ headerShown: true, title: 'Payment' }} />
+          <Stack.Screen name="review/[jobId]" options={{ headerShown: true, title: 'Leave a Review' }} />
+        </Stack>
+      </QueryClientProvider>
+    </StripeProvider>
   );
 }

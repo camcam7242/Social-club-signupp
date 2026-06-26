@@ -3,9 +3,9 @@ import {
   View, Text, StyleSheet, TouchableOpacity, Alert,
   ActivityIndicator, ScrollView,
 } from 'react-native';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { api, paymentApi } from '../../services/api';
+import { api } from '../../services/api';
 import { useSocketStore } from '../../store/socketStore';
 import { Job, JobStatus } from '../../types';
 
@@ -67,18 +67,7 @@ export default function JobTrackingScreen() {
     };
   }, [socket, id]);
 
-  const payMutation = useMutation({
-    mutationFn: () => paymentApi.createIntent(id),
-    onSuccess: (data) => {
-      // In production: present Stripe payment sheet with data.data.clientSecret
-      Alert.alert(
-        'Payment Ready',
-        `Total: $${job?.price || '—'}\nStripe payment sheet would open here in production.`,
-        [{ text: 'OK' }]
-      );
-    },
-    onError: (err: any) => Alert.alert('Error', err.response?.data?.error || 'Payment failed'),
-  });
+
 
   if (isLoading) return <ActivityIndicator style={{ flex: 1 }} />;
   if (!job) return <Text style={styles.empty}>Job not found.</Text>;
@@ -141,13 +130,9 @@ export default function JobTrackingScreen() {
           <Text style={styles.paySubtitle}>Your mechanic has completed the job.</Text>
           <TouchableOpacity
             style={styles.payBtn}
-            onPress={() => payMutation.mutate()}
-            disabled={payMutation.isPending}
+            onPress={() => router.push(`/pay/${id}`)}
           >
-            {payMutation.isPending
-              ? <ActivityIndicator color="#fff" />
-              : <Text style={styles.payBtnText}>Pay Now</Text>
-            }
+            <Text style={styles.payBtnText}>Pay Now  →</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push(`/review/${id}`)} style={styles.skipPay}>
             <Text style={styles.skipPayText}>Leave a Review</Text>
