@@ -90,3 +90,11 @@ export const reviewApi = {
     api.post('/reviews', data),
   forMechanic: (mechanicId: string) => api.get(`/reviews/mechanic/${mechanicId}`),
 };
+
+// Extended auth
+export const authExtApi = {
+  forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),
+  resetPassword: (token: string, password: string) =>
+    api.post('/auth/reset-password', { token, password }),
+  registerProfessional: (data: object) => api.post('/auth/register/professional', data),
+};

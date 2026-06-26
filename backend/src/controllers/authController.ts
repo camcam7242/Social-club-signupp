@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 import { query } from '../config/database';
 import { AppError } from '../middleware/errorHandler';
 
@@ -19,9 +19,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
   try {
     const { email, password, phone, role = 'customer' } = req.body;
 
-    if (!['customer', 'mechanic'].includes(role)) {
-      throw new AppError('Invalid role');
-    }
+    if (!['customer', 'mechanic'].includes(role)) throw new AppError('Invalid role');
 
     const existing = await query('SELECT id FROM users WHERE email = $1', [email]);
     if (existing.rows.length) throw new AppError('Email already registered');
@@ -32,7 +30,6 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
        VALUES ($1, $2, $3, $4) RETURNING id, email, role`,
       [email, phone, password_hash, role]
     );
-
     const user = rows[0];
 
     if (role === 'mechanic') {
@@ -41,7 +38,6 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
     const accessToken = signAccess(user.id, user.role);
     const refreshToken = signRefresh(user.id);
-
     await query(
       `INSERT INTO refresh_tokens (user_id, token, expires_at)
        VALUES ($1, $2, NOW() + INTERVAL '7 days')`,
@@ -49,20 +45,49 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     );
 
     res.status(201).json({ accessToken, refreshToken, user });
-  } catch (err) {
-    next(err);
-  }
+  } catch (err) { next(err); }
+};
+
+export const registerProfessional = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, password, phone, business_name, bio, service_radius_km = 25 } = req.body;
+
+    const existing = await query('SELECT id FROM users WHERE email = $1', [email]);
+    if (existing.rows.length) throw new AppError('Email already registered');
+
+    const password_hash = await bcrypt.hash(password, 12);
+    const { rows } = await query(
+      `INSERT INTO users (email, phone, password_hash, role)
+       VALUES ($1, $2, $3, 'mechanic') RETURNING id, email, role`,
+      [email, phone, password_hash]
+    );
+    const user = rows[0];
+
+    await query(
+      `INSERT INTO mechanics (user_id, business_name, bio, service_radius_km)
+       VALUES ($1, $2, $3, $4)`,
+      [user.id, business_name, bio, service_radius_km]
+    );
+
+    const accessToken = signAccess(user.id, 'mechanic');
+    const refreshToken = signRefresh(user.id);
+    await query(
+      `INSERT INTO refresh_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '7 days')`,
+      [user.id, refreshToken]
+    );
+
+    res.status(201).json({ accessToken, refreshToken, user });
+  } catch (err) { next(err); }
 };
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
-
     const { rows } = await query(
       'SELECT id, email, role, password_hash, is_active FROM users WHERE email = $1',
       [email]
     );
-
     const user = rows[0];
     if (!user) throw new AppError('Invalid credentials', 401);
     if (!user.is_active) throw new AppError('Account suspended', 403);
@@ -72,21 +97,14 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     const accessToken = signAccess(user.id, user.role);
     const refreshToken = signRefresh(user.id);
-
     await query(
       `INSERT INTO refresh_tokens (user_id, token, expires_at)
        VALUES ($1, $2, NOW() + INTERVAL '7 days')`,
       [user.id, refreshToken]
     );
 
-    res.json({
-      accessToken,
-      refreshToken,
-      user: { id: user.id, email: user.email, role: user.role },
-    });
-  } catch (err) {
-    next(err);
-  }
+    res.json({ accessToken, refreshToken, user: { id: user.id, email: user.email, role: user.role } });
+  } catch (err) { next(err); }
 };
 
 export const refresh = async (req: Request, res: Response, next: NextFunction) => {
@@ -95,21 +113,17 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
     if (!refreshToken) throw new AppError('Refresh token required', 401);
 
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as { userId: string };
-
     const { rows } = await query(
       `SELECT rt.id, u.role FROM refresh_tokens rt
        JOIN users u ON u.id = rt.user_id
        WHERE rt.token = $1 AND rt.expires_at > NOW() AND rt.user_id = $2`,
       [refreshToken, payload.userId]
     );
-
     if (!rows.length) throw new AppError('Invalid refresh token', 401);
 
     await query('DELETE FROM refresh_tokens WHERE token = $1', [refreshToken]);
-
     const newRefresh = signRefresh(payload.userId);
     const accessToken = signAccess(payload.userId, rows[0].role);
-
     await query(
       `INSERT INTO refresh_tokens (user_id, token, expires_at)
        VALUES ($1, $2, NOW() + INTERVAL '7 days')`,
@@ -117,21 +131,15 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
     );
 
     res.json({ accessToken, refreshToken: newRefresh });
-  } catch (err) {
-    next(err);
-  }
+  } catch (err) { next(err); }
 };
 
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { refreshToken } = req.body;
-    if (refreshToken) {
-      await query('DELETE FROM refresh_tokens WHERE token = $1', [refreshToken]);
-    }
+    if (refreshToken) await query('DELETE FROM refresh_tokens WHERE token = $1', [refreshToken]);
     res.json({ message: 'Logged out' });
-  } catch (err) {
-    next(err);
-  }
+  } catch (err) { next(err); }
 };
 
 export const getMe = async (req: Request, res: Response, next: NextFunction) => {
@@ -142,7 +150,58 @@ export const getMe = async (req: Request, res: Response, next: NextFunction) => 
     );
     if (!rows.length) throw new AppError('User not found', 404);
     res.json(rows[0]);
-  } catch (err) {
-    next(err);
-  }
+  } catch (err) { next(err); }
+};
+
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body;
+    const { rows } = await query('SELECT id FROM users WHERE email = $1', [email]);
+
+    // Always return 200 to avoid user enumeration
+    if (!rows.length) {
+      return res.json({ message: 'If that email exists, a reset link has been sent.' });
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    await query(
+      `INSERT INTO password_reset_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '1 hour')`,
+      [rows[0].id, token]
+    );
+
+    // In production: send email with reset link
+    // For now: return token in response (dev only)
+    const isDev = process.env.NODE_ENV !== 'production';
+    console.log(`Password reset token for ${email}: ${token}`);
+
+    res.json({
+      message: 'If that email exists, a reset link has been sent.',
+      ...(isDev && { dev_token: token }),
+    });
+  } catch (err) { next(err); }
+};
+
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { token, password } = req.body;
+    if (!token || !password) throw new AppError('Token and password required');
+    if (password.length < 8) throw new AppError('Password must be at least 8 characters');
+
+    const { rows } = await query(
+      `SELECT prt.user_id FROM password_reset_tokens prt
+       WHERE prt.token = $1 AND prt.expires_at > NOW() AND prt.used = FALSE`,
+      [token]
+    );
+    if (!rows.length) throw new AppError('Invalid or expired reset token', 400);
+
+    const password_hash = await bcrypt.hash(password, 12);
+    await query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2',
+      [password_hash, rows[0].user_id]);
+    await query('UPDATE password_reset_tokens SET used = TRUE WHERE token = $1', [token]);
+    // Invalidate all existing sessions
+    await query('DELETE FROM refresh_tokens WHERE user_id = $1', [rows[0].user_id]);
+
+    res.json({ message: 'Password updated. Please log in again.' });
+  } catch (err) { next(err); }
 };
