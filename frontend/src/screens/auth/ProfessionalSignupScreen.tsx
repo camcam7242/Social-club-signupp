@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform,
@@ -7,6 +7,9 @@ import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
 import { authExtApi } from '../../services/api';
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const DRAFT_KEY = 'pro_signup_draft';
 
 const SERVICE_TYPES = [
   'Oil Change', 'Tire Service', 'Battery', 'Brakes',
@@ -21,6 +24,7 @@ export default function ProfessionalSignupScreen() {
   const { loadUser } = useAuthStore();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [draftLoaded, setDraftLoaded] = useState(false);
 
   // Step 0 — Account
   const [email, setEmail] = useState('');
@@ -35,6 +39,38 @@ export default function ProfessionalSignupScreen() {
 
   // Step 2 — Services
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+
+  // Restore draft on mount
+  useEffect(() => {
+    AsyncStorage.getItem(DRAFT_KEY).then(raw => {
+      if (raw) {
+        try {
+          const d = JSON.parse(raw);
+          if (d.step !== undefined && d.step < 3) setStep(d.step);
+          if (d.email) setEmail(d.email);
+          if (d.phone) setPhone(d.phone);
+          if (d.businessName) setBusinessName(d.businessName);
+          if (d.bio) setBio(d.bio);
+          if (d.radius) setRadius(d.radius);
+          if (d.selectedServices) setSelectedServices(d.selectedServices);
+        } catch {}
+      }
+      setDraftLoaded(true);
+    });
+  }, []);
+
+  // Persist draft whenever any field changes (skip passwords for security)
+  const saveDraft = useCallback(() => {
+    AsyncStorage.setItem(DRAFT_KEY, JSON.stringify({
+      step, email, phone, businessName, bio, radius, selectedServices,
+    }));
+  }, [step, email, phone, businessName, bio, radius, selectedServices]);
+
+  useEffect(() => {
+    if (draftLoaded && step < 3) saveDraft();
+  }, [step, email, phone, businessName, bio, radius, selectedServices, draftLoaded]);
+
+  const clearDraft = () => AsyncStorage.removeItem(DRAFT_KEY);
 
   const toggleService = (s: string) =>
     setSelectedServices(p => p.includes(s) ? p.filter(x => x !== s) : [...p, s]);
@@ -66,6 +102,7 @@ export default function ProfessionalSignupScreen() {
       await SecureStore.setItemAsync('accessToken', data.accessToken);
       await SecureStore.setItemAsync('refreshToken', data.refreshToken);
       await loadUser();
+      await clearDraft();
       setStep(3);
     } catch (err: any) {
       Alert.alert('Error', err.response?.data?.error || 'Registration failed');
@@ -75,6 +112,8 @@ export default function ProfessionalSignupScreen() {
   };
 
   const progressPct = ((step) / (STEPS.length - 1)) * 100;
+
+  if (!draftLoaded) return <ActivityIndicator style={{ flex: 1 }} />;
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
