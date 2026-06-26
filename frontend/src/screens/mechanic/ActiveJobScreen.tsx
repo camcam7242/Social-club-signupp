@@ -6,6 +6,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { jobApi, mechanicApi } from '../../services/api';
 import { Job, JobStatus } from '../../types';
+import { useMechanicLocationBroadcast } from '../../hooks/useMechanicLocationBroadcast';
 
 const NEXT_STATUS: Partial<Record<JobStatus, { status: JobStatus; label: string; color: string }>> = {
   scheduled: { status: 'en_route', label: 'Start Driving', color: '#3b82f6' },
@@ -33,6 +34,9 @@ export default function ActiveJobScreen() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['my-jobs'] }),
     onError: (err: any) => Alert.alert('Error', err.response?.data?.error || 'Failed to update status'),
   });
+
+  const activeStatusJob = jobs.find(j => ["en_route","arrived"].includes(j.status));
+  useMechanicLocationBroadcast(activeStatusJob?.status as JobStatus | undefined);
 
   const activeJobs = jobs.filter(j => !['completed', 'cancelled'].includes(j.status));
   const pastJobs = jobs.filter(j => ['completed', 'cancelled'].includes(j.status));

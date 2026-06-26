@@ -162,6 +162,12 @@ export default function JobTrackingScreen() {
         </View>
       )}
 
+      {(currentStatus === 'en_route' || currentStatus === 'arrived') && (
+        <TouchableOpacity style={styles.liveMapBtn} onPress={() => router.push(`/track/${id}`)}>
+          <Text style={styles.liveMapBtnText}>🗺️  Track Live on Map</Text>
+        </TouchableOpacity>
+      )}
+
       {currentStatus === 'in_progress' && (
         <View style={styles.infoCard}>
           <Text style={styles.infoIcon}>🔧</Text>
@@ -215,5 +221,10 @@ const styles = StyleSheet.create({
   },
   infoIcon: { fontSize: 24 },
   infoText: { flex: 1, fontSize: 14, color: '#1e40af' },
+  liveMapBtn: {
+    backgroundColor: '#f0fdf4', borderWidth: 1.5, borderColor: '#10b981',
+    borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 16,
+  },
+  liveMapBtnText: { color: '#10b981', fontWeight: '600', fontSize: 15 },
   empty: { textAlign: 'center', marginTop: 60, color: '#9ca3af', fontSize: 15 },
 });
