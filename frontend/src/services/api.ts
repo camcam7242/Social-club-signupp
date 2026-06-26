@@ -77,3 +77,16 @@ export const paymentApi = {
   createIntent: (jobId: string) => api.post('/payments/intent', { jobId }),
   createMechanicAccount: (email: string) => api.post('/payments/mechanic-account', { email }),
 };
+
+// Jobs
+export const jobApi = {
+  list: () => api.get('/jobs'),
+  get: (id: string) => api.get(`/jobs/${id}`),
+};
+
+// Reviews
+export const reviewApi = {
+  submit: (data: { job_id: string; rating: number; comment?: string }) =>
+    api.post('/reviews', data),
+  forMechanic: (mechanicId: string) => api.get(`/reviews/mechanic/${mechanicId}`),
+};

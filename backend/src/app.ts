@@ -11,6 +11,8 @@ import requestRoutes from './routes/requests';
 import mechanicRoutes from './routes/mechanics';
 import paymentRoutes from './routes/payments';
 import adminRoutes from './routes/admin';
+import reviewRoutes from './routes/reviews';
+import jobRoutes from './routes/jobs';
 import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
@@ -32,6 +34,8 @@ app.use('/api/requests', requestRoutes);
 app.use('/api/mechanics', mechanicRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/jobs', jobRoutes);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
