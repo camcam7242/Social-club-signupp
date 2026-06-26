@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "Mechanic Marketplace",
+    "slug": "mechanic-marketplace",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a56db"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.mechanicmarketplace.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need your location to find nearby mechanics.",
+        "NSCameraUsageDescription": "Take photos of your vehicle issue.",
+        "NSPhotoLibraryUsageDescription": "Upload photos of your vehicle issue."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a56db"
+      },
+      "package": "com.mechanicmarketplace.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-location",
+      "expo-image-picker",
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#1a56db"
+        }
+      ]
+    ],
+    "scheme": "mechanic-marketplace"
+  }
+}
