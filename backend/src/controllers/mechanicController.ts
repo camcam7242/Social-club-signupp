@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { query } from '../config/database';
 import { AppError } from '../middleware/errorHandler';
 import { getIO } from '../services/socketService';
+import { sendPushToUser } from '../services/pushService';
 
 export const getMechanicProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -189,6 +190,8 @@ export const updateJobStatus = async (req: Request, res: Response, next: NextFun
 
     if (!rows.length) throw new AppError('Job not found', 404);
 
+    const job = rows[0];
+
     const eventMap: Record<string, string> = {
       en_route: 'mechanic_en_route',
       arrived: 'mechanic_arrived',
@@ -196,8 +199,82 @@ export const updateJobStatus = async (req: Request, res: Response, next: NextFun
       completed: 'job_completed',
     };
 
-    getIO().to(`job:${jobId}`).emit(eventMap[status], rows[0]);
-    res.json(rows[0]);
+    getIO().to(`job:${jobId}`).emit(eventMap[status], job);
+
+    // Push notifications to customer
+    const pushMessages: Record<string, string> = {
+      en_route: 'Your mechanic is on the way! 🚗',
+      arrived: 'Your mechanic has arrived! 🔧',
+      in_progress: 'Work has started on your vehicle.',
+      completed: 'Job complete! Tap to pay and leave a review.',
+    };
+
+    await sendPushToUser(job.customer_id, {
+      title: 'Job Update',
+      body: pushMessages[status],
+      data: { jobId },
+    });
+
+    // Schedule a rating prompt 30 minutes after completion
+    if (status === 'completed') {
+      setTimeout(async () => {
+        try {
+          await sendPushToUser(job.customer_id, {
+            title: 'How did it go?',
+            body: 'Please rate your mechanic and leave a review.',
+            data: { jobId, screen: 'review' },
+          });
+        } catch (e) {
+          console.error('Rating prompt push error', e);
+        }
+      }, 30 * 60 * 1000);
+    }
+
+    res.json(job);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getMechanicEta = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { lat, lng } = req.query;
+
+    if (!lat || !lng) throw new AppError('lat and lng query params are required', 400);
+
+    const { rows } = await query(
+      'SELECT current_lat, current_lng FROM mechanics WHERE id = $1',
+      [id]
+    );
+    if (!rows.length) throw new AppError('Mechanic not found', 404);
+
+    const mech = rows[0];
+    if (mech.current_lat == null || mech.current_lng == null) {
+      throw new AppError('Mechanic location not available', 404);
+    }
+
+    const customerLat = parseFloat(lat as string);
+    const customerLng = parseFloat(lng as string);
+    const mechLat = parseFloat(mech.current_lat);
+    const mechLng = parseFloat(mech.current_lng);
+
+    // Haversine distance in km
+    const R = 6371;
+    const dLat = ((customerLat - mechLat) * Math.PI) / 180;
+    const dLng = ((customerLng - mechLng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((mechLat * Math.PI) / 180) *
+        Math.cos((customerLat * Math.PI) / 180) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distanceKm = R * c;
+
+    const avgSpeedKmh = 40;
+    const estimatedMinutes = Math.round((distanceKm / avgSpeedKmh) * 60);
+
+    res.json({ distanceKm: Math.round(distanceKm * 10) / 10, estimatedMinutes });
   } catch (err) {
     next(err);
   }
