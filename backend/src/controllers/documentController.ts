@@ -47,6 +47,25 @@ export const uploadDocument = async (req: Request, res: Response): Promise<void>
       return;
     }
 
+    // Validate file_url to prevent SSRF — must be https and match allowed storage hosts
+    try {
+      const parsed = new URL(file_url);
+      const ALLOWED_HOSTS = (process.env.ALLOWED_STORAGE_HOSTS || 's3.amazonaws.com,storage.googleapis.com').split(',');
+      const hostAllowed = ALLOWED_HOSTS.some(h => parsed.hostname.endsWith(h));
+      if (parsed.protocol !== 'https:' || !hostAllowed) {
+        res.status(400).json({ error: 'file_url must be a valid HTTPS URL from an allowed storage host' });
+        return;
+      }
+    } catch {
+      res.status(400).json({ error: 'file_url is not a valid URL' });
+      return;
+    }
+
+    if (file_name && file_name.length > 255) {
+      res.status(400).json({ error: 'file_name too long' });
+      return;
+    }
+
     const mechanicId = await getMechanicId(userId);
     if (!mechanicId) {
       res.status(403).json({ error: 'Mechanic profile not found' });

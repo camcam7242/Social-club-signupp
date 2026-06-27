@@ -113,10 +113,11 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
     if (!refreshToken) throw new AppError('Refresh token required', 401);
 
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as { userId: string };
+    // Also check is_active so suspended users cannot keep minting tokens
     const { rows } = await query(
       `SELECT rt.id, u.role FROM refresh_tokens rt
        JOIN users u ON u.id = rt.user_id
-       WHERE rt.token = $1 AND rt.expires_at > NOW() AND rt.user_id = $2`,
+       WHERE rt.token = $1 AND rt.expires_at > NOW() AND rt.user_id = $2 AND u.is_active = TRUE`,
       [refreshToken, payload.userId]
     );
     if (!rows.length) throw new AppError('Invalid refresh token', 401);
@@ -137,7 +138,11 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
 export const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { refreshToken } = req.body;
-    if (refreshToken) await query('DELETE FROM refresh_tokens WHERE token = $1', [refreshToken]);
+    const userId = req.user?.userId;
+    // Only delete the token if it belongs to the authenticated user
+    if (refreshToken && userId) {
+      await query('DELETE FROM refresh_tokens WHERE token = $1 AND user_id = $2', [refreshToken, userId]);
+    }
     res.json({ message: 'Logged out' });
   } catch (err) { next(err); }
 };
@@ -158,27 +163,28 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
     const { email } = req.body;
     const { rows } = await query('SELECT id FROM users WHERE email = $1', [email]);
 
-    // Always return 200 to avoid user enumeration
-    if (!rows.length) {
-      return res.json({ message: 'If that email exists, a reset link has been sent.' });
-    }
+    // Always return same message to avoid user enumeration
+    const RESPONSE = { message: 'If that email exists, a reset link has been sent.' };
+    if (!rows.length) return res.json(RESPONSE);
 
-    const token = crypto.randomBytes(32).toString('hex');
+    const plainToken = crypto.randomBytes(32).toString('hex');
+    // Store SHA-256 hash so a DB breach can't be used to reset accounts
+    const tokenHash = crypto.createHash('sha256').update(plainToken).digest('hex');
+
     await query(
       `INSERT INTO password_reset_tokens (user_id, token, expires_at)
        VALUES ($1, $2, NOW() + INTERVAL '1 hour')`,
-      [rows[0].id, token]
+      [rows[0].id, tokenHash]
     );
 
-    // In production: send email with reset link
-    // For now: return token in response (dev only)
-    const isDev = process.env.NODE_ENV !== 'production';
-    console.log(`Password reset token for ${email}: ${token}`);
+    // TODO: replace with real email (SendGrid/SES). Never log tokens in production.
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[DEV] Reset token (plain): ${plainToken}`);
+    }
+    // Send plainToken to user via email — NOT in the API response
+    // await emailService.sendPasswordReset(email, plainToken);
 
-    res.json({
-      message: 'If that email exists, a reset link has been sent.',
-      ...(isDev && { dev_token: token }),
-    });
+    res.json(RESPONSE);
   } catch (err) { next(err); }
 };
 
@@ -188,17 +194,20 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
     if (!token || !password) throw new AppError('Token and password required');
     if (password.length < 8) throw new AppError('Password must be at least 8 characters');
 
+    // Hash the incoming token to compare against stored hash
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
     const { rows } = await query(
       `SELECT prt.user_id FROM password_reset_tokens prt
        WHERE prt.token = $1 AND prt.expires_at > NOW() AND prt.used = FALSE`,
-      [token]
+      [tokenHash]
     );
     if (!rows.length) throw new AppError('Invalid or expired reset token', 400);
 
     const password_hash = await bcrypt.hash(password, 12);
     await query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2',
       [password_hash, rows[0].user_id]);
-    await query('UPDATE password_reset_tokens SET used = TRUE WHERE token = $1', [token]);
+    await query('UPDATE password_reset_tokens SET used = TRUE WHERE token = $1', [tokenHash]);
     // Invalidate all existing sessions
     await query('DELETE FROM refresh_tokens WHERE user_id = $1', [rows[0].user_id]);
 

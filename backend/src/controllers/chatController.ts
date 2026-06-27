@@ -55,6 +55,10 @@ export const sendChatMessage = async (req: Request, res: Response): Promise<void
       res.status(400).json({ error: 'message is required' });
       return;
     }
+    if (message.length > 2000) {
+      res.status(400).json({ error: 'message must be 2000 characters or less' });
+      return;
+    }
 
     const job = await getJobAndVerifyAccess(jobId, userId);
     if (!job) {

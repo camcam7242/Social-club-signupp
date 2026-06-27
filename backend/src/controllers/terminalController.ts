@@ -83,6 +83,27 @@ export const createTerminalPaymentIntent = async (req: Request, res: Response, n
 export const captureTerminalPayment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { paymentIntentId, jobId } = req.body;
+    const userId = req.user!.userId;
+
+    if (!paymentIntentId || !jobId) throw new AppError('paymentIntentId and jobId required', 400);
+
+    // Verify with Stripe that the payment actually succeeded before marking captured
+    const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+    if (pi.status !== 'succeeded' && pi.status !== 'requires_capture') {
+      throw new AppError('Payment not confirmed by Stripe', 400);
+    }
+
+    // Verify the calling mechanic owns this payment — prevents cross-job fraud
+    const { rows } = await query(
+      `SELECT p.id FROM payments p
+       JOIN jobs j ON j.id = p.job_id
+       JOIN mechanics m ON m.id = j.mechanic_id
+       WHERE p.stripe_payment_intent_id = $1
+         AND m.user_id = $2
+         AND p.job_id = $3`,
+      [paymentIntentId, userId, jobId]
+    );
+    if (!rows.length) throw new AppError('Unauthorized or payment not found', 403);
 
     await query(
       `UPDATE payments SET status = 'captured', updated_at = NOW()

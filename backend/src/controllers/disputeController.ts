@@ -12,6 +12,14 @@ export const fileDispute = async (req: Request, res: Response): Promise<void> =>
       res.status(400).json({ error: 'reason is required' });
       return;
     }
+    if (reason.length > 500) {
+      res.status(400).json({ error: 'reason must be 500 characters or less' });
+      return;
+    }
+    if (details && details.length > 2000) {
+      res.status(400).json({ error: 'details must be 2000 characters or less' });
+      return;
+    }
 
     // Verify job exists and user is the customer or the mechanic on this job
     const { rows: jobRows } = await pool.query(

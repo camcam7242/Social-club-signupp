@@ -93,7 +93,11 @@ export const stripeWebhook = async (req: Request, res: Response, next: NextFunct
 export const createMechanicAccount = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user!.userId;
-    const { email } = req.body;
+
+    // Always use the mechanic's own verified email — never trust client-supplied email
+    const { rows: userRows } = await query('SELECT email FROM users WHERE id = $1', [userId]);
+    if (!userRows.length) throw new AppError('User not found', 404);
+    const email = userRows[0].email;
 
     const account = await stripe.accounts.create({
       type: 'express',

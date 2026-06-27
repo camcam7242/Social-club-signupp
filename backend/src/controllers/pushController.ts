@@ -6,8 +6,14 @@ export const registerPushToken = async (req: Request, res: Response): Promise<vo
     const userId = req.user!.userId;
     const { token, platform } = req.body;
 
-    if (!token) {
-      res.status(400).json({ error: 'token is required' });
+    if (!token || typeof token !== 'string' || token.length > 200) {
+      res.status(400).json({ error: 'Valid token is required' });
+      return;
+    }
+
+    const VALID_PLATFORMS = ['ios', 'android', 'web'];
+    if (platform && !VALID_PLATFORMS.includes(platform)) {
+      res.status(400).json({ error: 'platform must be ios, android, or web' });
       return;
     }
 

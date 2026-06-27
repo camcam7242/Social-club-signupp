@@ -47,12 +47,24 @@ export const updateLocation = async (req: Request, res: Response, next: NextFunc
     const userId = req.user!.userId;
     const { lat, lng } = req.body;
 
+    if (typeof lat !== 'number' || typeof lng !== 'number') throw new AppError('lat and lng must be numbers', 400);
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) throw new AppError('Invalid coordinates', 400);
+
     await query(
       'UPDATE mechanics SET current_lat = $1, current_lng = $2 WHERE user_id = $3',
       [lat, lng, userId]
     );
 
-    getIO().emit('mechanic_location_updated', { mechanicUserId: userId, lat, lng });
+    // Only broadcast to customers with an active job with this mechanic — not all sockets
+    const { rows: activeJobs } = await query(
+      `SELECT id FROM jobs WHERE mechanic_id = (SELECT id FROM mechanics WHERE user_id = $1)
+       AND status IN ('en_route', 'arrived')`,
+      [userId]
+    );
+    for (const job of activeJobs) {
+      getIO().to(`job:${job.id}`).emit('mechanic_location_updated', { mechanicUserId: userId, lat, lng });
+    }
+
     res.json({ message: 'Location updated' });
   } catch (err) {
     next(err);
@@ -61,11 +73,17 @@ export const updateLocation = async (req: Request, res: Response, next: NextFunc
 
 export const getNearbyMechanics = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { lat, lng, radius = 25 } = req.query;
+    const lat = parseFloat(req.query.lat as string);
+    const lng = parseFloat(req.query.lng as string);
+    // Cap radius server-side — prevents full table scans with huge values
+    const radius = Math.min(Math.max(parseFloat(req.query.radius as string) || 25, 1), 100);
 
-    // Haversine distance in km
+    if (isNaN(lat) || isNaN(lng)) throw new AppError('Valid lat and lng are required', 400);
+
+    // Exclude email (PII) — only expose what customers need for discovery
     const { rows } = await query(
-      `SELECT m.*, u.email,
+      `SELECT m.id, m.business_name, m.bio, m.rating, m.service_radius_km,
+              m.current_lat, m.current_lng, u.first_name, u.last_name,
         (6371 * acos(
           cos(radians($1)) * cos(radians(m.current_lat)) *
           cos(radians(m.current_lng) - radians($2)) +
@@ -85,7 +103,7 @@ export const getNearbyMechanics = async (req: Request, res: Response, next: Next
        LIMIT 20`,
       [lat, lng, radius]
     );
-    res.json(rows);
+    res.json(rows.map(({ current_lat: _lat, current_lng: _lng, ...safe }) => safe));
   } catch (err) {
     next(err);
   }
@@ -215,19 +233,20 @@ export const updateJobStatus = async (req: Request, res: Response, next: NextFun
       data: { jobId },
     });
 
-    // Schedule a rating prompt 30 minutes after completion
+    // Rating prompt: store a scheduled_push record for a worker/cron to send
+    // (in-process setTimeout is lost on restart and doesn't scale)
     if (status === 'completed') {
-      setTimeout(async () => {
-        try {
-          await sendPushToUser(job.customer_id, {
-            title: 'How did it go?',
-            body: 'Please rate your mechanic and leave a review.',
-            data: { jobId, screen: 'review' },
-          });
-        } catch (e) {
-          console.error('Rating prompt push error', e);
-        }
-      }, 30 * 60 * 1000);
+      await query(
+        `INSERT INTO scheduled_pushes (user_id, send_at, title, body, data)
+         VALUES ($1, NOW() + INTERVAL '30 minutes', $2, $3, $4)
+         ON CONFLICT DO NOTHING`,
+        [
+          job.customer_id,
+          'How did it go?',
+          'Please rate your mechanic and leave a review.',
+          JSON.stringify({ jobId, screen: 'review' }),
+        ]
+      ).catch(() => { /* table may not exist yet — non-critical */ });
     }
 
     res.json(job);
@@ -239,9 +258,22 @@ export const updateJobStatus = async (req: Request, res: Response, next: NextFun
 export const getMechanicEta = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { lat, lng } = req.query;
+    const requestingUserId = req.user!.userId;
 
-    if (!lat || !lng) throw new AppError('lat and lng query params are required', 400);
+    const customerLat = parseFloat(req.query.lat as string);
+    const customerLng = parseFloat(req.query.lng as string);
+    if (isNaN(customerLat) || isNaN(customerLng)) throw new AppError('Valid lat and lng are required', 400);
+
+    // Only allow if requesting user has an active job with this mechanic
+    const { rows: authCheck } = await query(
+      `SELECT j.id FROM jobs j
+       JOIN mechanics m ON m.id = j.mechanic_id
+       WHERE m.id = $1
+         AND j.customer_id = $2
+         AND j.status IN ('en_route', 'arrived')`,
+      [id, requestingUserId]
+    );
+    if (!authCheck.length) throw new AppError('No active job with this mechanic', 403);
 
     const { rows } = await query(
       'SELECT current_lat, current_lng FROM mechanics WHERE id = $1',

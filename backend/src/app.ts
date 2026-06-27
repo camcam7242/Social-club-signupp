@@ -21,19 +21,39 @@ import availabilityRoutes from './routes/availability';
 import disputeRoutes from './routes/disputes';
 import jobNotesRoutes from './routes/jobNotes';
 import { errorHandler } from './middleware/errorHandler';
+import { apiLimiter } from './middleware/rateLimit';
 
 dotenv.config();
+
+// Fail fast if critical env vars are missing
+const REQUIRED_ENV = ['JWT_SECRET', 'JWT_REFRESH_SECRET', 'STRIPE_SECRET_KEY', 'DATABASE_URL'];
+for (const key of REQUIRED_ENV) {
+  if (!process.env[key]) throw new Error(`Missing required environment variable: ${key}`);
+}
 
 const app = express();
 const server = http.createServer(app);
 
 initSocket(server);
 
-app.use(helmet());
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
-app.use(morgan('dev'));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(helmet({
+  contentSecurityPolicy: true,
+  crossOriginEmbedderPolicy: true,
+  hsts: { maxAge: 31536000, includeSubDomains: true },
+}));
+
+const allowedOrigin = process.env.FRONTEND_URL;
+if (!allowedOrigin && process.env.NODE_ENV === 'production') {
+  throw new Error('FRONTEND_URL must be set in production');
+}
+app.use(cors({ origin: allowedOrigin || '*', credentials: !!allowedOrigin }));
+
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// Apply rate limiting to all API routes
+app.use('/api/', apiLimiter);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/vehicles', vehicleRoutes);
@@ -51,7 +71,8 @@ app.use('/api/mechanics/availability', availabilityRoutes);
 app.use('/api/jobs/:jobId/dispute', disputeRoutes);
 app.use('/api/jobs/:jobId/notes', jobNotesRoutes);
 
-app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+// Health check — internal only, not rate-limited but also not informative
+app.get('/health', (_req, res) => res.json({ status: 'ok', ts: Date.now() }));
 
 app.use(errorHandler);
 
