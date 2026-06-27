@@ -250,6 +250,9 @@ export default function ProfessionalSignupScreen() {
             <TouchableOpacity style={styles.primaryBtn} onPress={() => router.replace('/(tabs)')}>
               <Text style={styles.primaryBtnText}>Go to Dashboard</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.promoBtn} onPress={() => router.push('/promo')}>
+              <Text style={styles.promoBtnText}>🔑 Have a Promo Code?</Text>
+            </TouchableOpacity>
           </View>
         )}
 
@@ -329,4 +332,6 @@ const styles = StyleSheet.create({
   primaryBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
   linkBtn: { alignItems: 'center', marginTop: 18 },
   linkBtnText: { color: '#1a56db', fontSize: 15 },
+  promoBtn: { alignItems: 'center', marginTop: 14, padding: 10 },
+  promoBtnText: { color: '#1a56db', fontSize: 15, fontWeight: '600' },
 });

@@ -20,6 +20,7 @@ import documentRoutes from './routes/documents';
 import availabilityRoutes from './routes/availability';
 import disputeRoutes from './routes/disputes';
 import jobNotesRoutes from './routes/jobNotes';
+import promoRoutes from './routes/promo';
 import { errorHandler } from './middleware/errorHandler';
 import { apiLimiter } from './middleware/rateLimit';
 
@@ -70,6 +71,7 @@ app.use('/api/mechanics/documents', documentRoutes);
 app.use('/api/mechanics/availability', availabilityRoutes);
 app.use('/api/jobs/:jobId/dispute', disputeRoutes);
 app.use('/api/jobs/:jobId/notes', jobNotesRoutes);
+app.use('/api/promo', promoRoutes);
 
 // Health check — internal only, not rate-limited but also not informative
 app.get('/health', (_req, res) => res.json({ status: 'ok', ts: Date.now() }));

@@ -134,6 +134,12 @@ export const jobNotesApi = {
   add: (jobId: string, note: string) => api.post(`/jobs/${jobId}/notes`, { note }),
 };
 
+// Promo codes
+export const promoApi = {
+  validate: (code: string) => api.post('/promo/validate', { code }),
+  redeem: (code: string) => api.post('/promo/redeem', { code }),
+};
+
 // Extended auth
 export const authExtApi = {
   forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),

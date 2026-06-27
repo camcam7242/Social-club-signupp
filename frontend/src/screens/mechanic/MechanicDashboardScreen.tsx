@@ -90,6 +90,10 @@ export default function MechanicDashboardScreen() {
           <Text style={styles.quickLinkIcon}>💰</Text>
           <Text style={styles.quickLinkText}>Earnings</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.quickLink} onPress={() => router.push('/promo')}>
+          <Text style={styles.quickLinkIcon}>🔑</Text>
+          <Text style={styles.quickLinkText}>Promo Code</Text>
+        </TouchableOpacity>
       </View>
 
       {profile?.verified && (

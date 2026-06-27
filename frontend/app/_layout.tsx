@@ -49,6 +49,7 @@ export default function RootLayout() {
           <Stack.Screen name="availability" options={{ headerShown: true, title: 'Availability' }} />
           <Stack.Screen name="earnings" options={{ headerShown: true, title: 'Earnings' }} />
           <Stack.Screen name="receipt/[jobId]" options={{ headerShown: true, title: 'Receipt' }} />
+          <Stack.Screen name="promo" options={{ headerShown: true, title: 'Promo Code' }} />
         </Stack>
       </QueryClientProvider>
       </StripeTerminalProvider>
