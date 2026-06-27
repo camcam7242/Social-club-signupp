@@ -111,43 +111,71 @@ export default function RequestDetailScreen() {
         </View>
       )}
 
-      {quotes.map((q) => (
-        <View key={q.id} style={[styles.quoteCard, q.status !== 'pending' && styles.quoteCardDim]}>
-          <View style={styles.row}>
-            <Text style={styles.quotePrice}>${parseFloat(q.price as any).toFixed(2)}</Text>
-            {q.status !== 'pending' && (
-              <Text style={styles.quoteStatus}>{q.status}</Text>
+      {quotes.map((q, idx) => {
+        const isPending = q.status === 'pending';
+        const rating = (q as any).mechanic_rating;
+        const distance = (q as any).mechanic_distance_km;
+        const mechanicName = (q as any).mechanic_name || 'Mechanic';
+        return (
+          <View key={q.id} style={[styles.quoteCard, !isPending && styles.quoteCardDim]}>
+            {/* Rank badge */}
+            {isPending && idx === 0 && (
+              <View style={styles.bestBadge}><Text style={styles.bestBadgeText}>⭐ Best Match</Text></View>
+            )}
+            <View style={styles.quoteTopRow}>
+              <View>
+                <Text style={styles.mechanicName}>{mechanicName}</Text>
+                <View style={styles.metaRow}>
+                  {rating != null && (
+                    <Text style={styles.metaText}>★ {parseFloat(rating).toFixed(1)}</Text>
+                  )}
+                  {distance != null && (
+                    <Text style={styles.metaText}>  {parseFloat(distance).toFixed(1)} km away</Text>
+                  )}
+                </View>
+              </View>
+              <View style={styles.priceBlock}>
+                <Text style={styles.quotePrice}>${parseFloat(q.price as any).toFixed(2)}</Text>
+                {q.estimated_duration_hours && (
+                  <Text style={styles.quoteDuration}>~{q.estimated_duration_hours}h</Text>
+                )}
+              </View>
+            </View>
+
+            {q.notes && <Text style={styles.quoteNotes}>{q.notes}</Text>}
+
+            {!isPending && (
+              <Text style={styles.quoteStatus}>{q.status.charAt(0).toUpperCase() + q.status.slice(1)}</Text>
+            )}
+
+            {isPending && (
+              <Text style={styles.quoteExpiry}>
+                Offer expires {new Date(q.expires_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+            )}
+
+            {canAccept && isPending && (
+              <TouchableOpacity
+                style={styles.acceptBtn}
+                onPress={() => Alert.alert(
+                  'Accept Quote',
+                  `Book ${mechanicName} for $${parseFloat(q.price as any).toFixed(2)}?`,
+                  [
+                    { text: 'Cancel' },
+                    { text: 'Accept', onPress: () => acceptMutation.mutate(q.id) },
+                  ]
+                )}
+                disabled={acceptMutation.isPending}
+              >
+                {acceptMutation.isPending
+                  ? <ActivityIndicator color="#fff" />
+                  : <Text style={styles.acceptBtnText}>Book This Mechanic  →</Text>
+                }
+              </TouchableOpacity>
             )}
           </View>
-          {q.estimated_duration_hours && (
-            <Text style={styles.quoteDuration}>Est. {q.estimated_duration_hours}h</Text>
-          )}
-          {q.notes && <Text style={styles.quoteNotes}>{q.notes}</Text>}
-          <Text style={styles.quoteExpiry}>
-            Expires {new Date(q.expires_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </Text>
-
-          {canAccept && q.status === 'pending' && (
-            <TouchableOpacity
-              style={styles.acceptBtn}
-              onPress={() => Alert.alert(
-                'Accept Quote',
-                `Book this mechanic for $${parseFloat(q.price as any).toFixed(2)}?`,
-                [
-                  { text: 'Cancel' },
-                  { text: 'Accept', onPress: () => acceptMutation.mutate(q.id) },
-                ]
-              )}
-              disabled={acceptMutation.isPending}
-            >
-              {acceptMutation.isPending
-                ? <ActivityIndicator color="#fff" />
-                : <Text style={styles.acceptBtnText}>Accept This Quote</Text>
-              }
-            </TouchableOpacity>
-          )}
-        </View>
-      ))}
+        );
+      })}
 
       {canCancel && (
         <TouchableOpacity
@@ -161,17 +189,14 @@ export default function RequestDetailScreen() {
         </TouchableOpacity>
       )}
 
-      {request.status === 'accepted' || request.status === 'in_progress' ? (
+      {(request.status === 'accepted' || request.status === 'in_progress' || request.status === 'completed') && (request as any).job_id && (
         <TouchableOpacity
           style={styles.trackBtn}
-          onPress={() => {
-            // Find the active job — for now navigate to jobs tab
-            router.push('/(tabs)');
-          }}
+          onPress={() => router.push(`/jobs/${(request as any).job_id}`)}
         >
-          <Text style={styles.trackBtnText}>Track Job</Text>
+          <Text style={styles.trackBtnText}>🔍 Track Job Status</Text>
         </TouchableOpacity>
-      ) : null}
+      )}
     </ScrollView>
   );
 }
@@ -193,17 +218,25 @@ const styles = StyleSheet.create({
   emptyQuotes: { backgroundColor: '#fff', borderRadius: 12, padding: 24, alignItems: 'center', marginBottom: 12 },
   emptyQuotesText: { color: '#6b7280', fontSize: 14 },
   quoteCard: {
-    backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 12,
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+    backgroundColor: '#fff', borderRadius: 14, padding: 16, marginBottom: 12,
+    shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 6, elevation: 3,
+    borderWidth: 1, borderColor: '#f3f4f6',
   },
-  quoteCardDim: { opacity: 0.6 },
-  quotePrice: { fontSize: 24, fontWeight: '700', color: '#1a56db' },
-  quoteStatus: { fontSize: 13, color: '#6b7280', fontWeight: '500', textTransform: 'capitalize' },
-  quoteDuration: { fontSize: 13, color: '#6b7280', marginTop: 4 },
-  quoteNotes: { fontSize: 14, color: '#374151', marginTop: 8 },
-  quoteExpiry: { fontSize: 12, color: '#9ca3af', marginTop: 8 },
-  acceptBtn: { backgroundColor: '#1a56db', borderRadius: 10, padding: 14, alignItems: 'center', marginTop: 12 },
-  acceptBtnText: { color: '#fff', fontWeight: '600', fontSize: 15 },
+  quoteCardDim: { opacity: 0.55 },
+  quoteTopRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
+  mechanicName: { fontSize: 16, fontWeight: '700', color: '#111', marginBottom: 4 },
+  metaRow: { flexDirection: 'row', gap: 4 },
+  metaText: { fontSize: 13, color: '#6b7280' },
+  priceBlock: { alignItems: 'flex-end' },
+  quotePrice: { fontSize: 26, fontWeight: '800', color: '#1a56db' },
+  quoteStatus: { fontSize: 13, color: '#9ca3af', fontWeight: '500', marginTop: 6 },
+  quoteDuration: { fontSize: 12, color: '#9ca3af', marginTop: 2 },
+  quoteNotes: { fontSize: 14, color: '#374151', marginBottom: 8, lineHeight: 20 },
+  quoteExpiry: { fontSize: 11, color: '#9ca3af', marginBottom: 8 },
+  acceptBtn: { backgroundColor: '#1a56db', borderRadius: 12, padding: 14, alignItems: 'center', marginTop: 4 },
+  acceptBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  bestBadge: { backgroundColor: '#fef3c7', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start', marginBottom: 10 },
+  bestBadgeText: { fontSize: 12, fontWeight: '700', color: '#92400e' },
   cancelBtn: { borderWidth: 1.5, borderColor: '#ef4444', borderRadius: 12, padding: 14, alignItems: 'center', marginTop: 8 },
   cancelBtnText: { color: '#ef4444', fontWeight: '600' },
   trackBtn: { backgroundColor: '#10b981', borderRadius: 12, padding: 14, alignItems: 'center', marginTop: 8 },

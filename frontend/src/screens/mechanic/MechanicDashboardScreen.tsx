@@ -54,8 +54,11 @@ export default function MechanicDashboardScreen() {
       </View>
 
       {earnings && (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Earnings</Text>
+        <TouchableOpacity style={styles.card} onPress={() => router.push('/earnings')} activeOpacity={0.8}>
+          <View style={styles.row}>
+            <Text style={styles.cardTitle}>Earnings</Text>
+            <Text style={styles.seeAll}>Full Charts →</Text>
+          </View>
           <View style={styles.earningsRow}>
             <View style={styles.earningItem}>
               <Text style={styles.earningValue}>${parseFloat(earnings.this_month).toFixed(2)}</Text>
@@ -70,8 +73,24 @@ export default function MechanicDashboardScreen() {
               <Text style={styles.earningLabel}>Jobs Done</Text>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       )}
+
+      {/* Quick Links */}
+      <View style={styles.quickLinks}>
+        <TouchableOpacity style={styles.quickLink} onPress={() => router.push('/mechanic-docs')}>
+          <Text style={styles.quickLinkIcon}>📄</Text>
+          <Text style={styles.quickLinkText}>Documents</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quickLink} onPress={() => router.push('/availability')}>
+          <Text style={styles.quickLinkIcon}>📅</Text>
+          <Text style={styles.quickLinkText}>Availability</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quickLink} onPress={() => router.push('/earnings')}>
+          <Text style={styles.quickLinkIcon}>💰</Text>
+          <Text style={styles.quickLinkText}>Earnings</Text>
+        </TouchableOpacity>
+      </View>
 
       {profile?.verified && (
         <>
@@ -107,6 +126,14 @@ const styles = StyleSheet.create({
   earningItem: { alignItems: 'center' },
   earningValue: { fontSize: 22, fontWeight: '700', color: '#1a56db' },
   earningLabel: { fontSize: 12, color: '#6b7280', marginTop: 4 },
+  seeAll: { fontSize: 13, color: '#1a56db', fontWeight: '500' },
+  quickLinks: { flexDirection: 'row', gap: 10, marginBottom: 16 },
+  quickLink: {
+    flex: 1, backgroundColor: '#fff', borderRadius: 12, padding: 14,
+    alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 2,
+  },
+  quickLinkIcon: { fontSize: 24, marginBottom: 6 },
+  quickLinkText: { fontSize: 12, fontWeight: '600', color: '#374151' },
   sectionTitle: { fontSize: 17, fontWeight: '700', color: '#111', marginTop: 8, marginBottom: 12 },
   requestCard: {
     backgroundColor: '#fff', borderRadius: 10, padding: 14, marginBottom: 10,
