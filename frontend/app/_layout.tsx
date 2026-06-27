@@ -6,12 +6,22 @@ import { StripeTerminalProvider } from '@stripe/stripe-terminal-react-native';
 import { useAuthStore } from '../src/store/authStore';
 import { useSocketStore } from '../src/store/socketStore';
 import { usePushNotifications } from '../src/hooks/usePushNotifications';
+import { api } from '../src/services/api';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30_000 } },
 });
 
 const STRIPE_KEY = process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
+
+async function fetchTokenProvider(): Promise<string> {
+  try {
+    const { data } = await api.post('/terminal/connection-token');
+    return data.secret;
+  } catch {
+    return '';
+  }
+}
 
 export default function RootLayout() {
   const loadUser = useAuthStore((s) => s.loadUser);
