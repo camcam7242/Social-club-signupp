@@ -55,10 +55,6 @@
           "enableGooglePay": true
         }
       ],
-      [
-        "@stripe/stripe-terminal-react-native",
-        {}
-      ]
     ],
     "scheme": "mechanic-marketplace",
     "extra": {

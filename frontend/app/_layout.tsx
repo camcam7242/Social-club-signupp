@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import { StripeTerminalProvider } from '@stripe/stripe-terminal-react-native';
 import { useAuthStore } from '../src/store/authStore';
 import { useSocketStore } from '../src/store/socketStore';
 import { usePushNotifications } from '../src/hooks/usePushNotifications';
@@ -43,7 +42,6 @@ export default function RootLayout() {
       merchantIdentifier="merchant.com.mechanicmarketplace"
       urlScheme="mechanic-marketplace"
     >
-      <StripeTerminalProvider logLevel="verbose" tokenProvider={fetchTokenProvider}>
       <QueryClientProvider client={queryClient}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(auth)" />
@@ -62,7 +60,6 @@ export default function RootLayout() {
           <Stack.Screen name="promo" options={{ headerShown: true, title: 'Promo Code' }} />
         </Stack>
       </QueryClientProvider>
-      </StripeTerminalProvider>
     </StripeProvider>
   );
 }
