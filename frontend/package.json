@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "expo": "^51.0.28",
+    "expo-modules-core": "^1.11.13",
     "expo-status-bar": "~1.12.1",
     "expo-router": "~3.5.0",
     "expo-location": "~17.0.1",
