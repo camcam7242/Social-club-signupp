@@ -3,12 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sslConfig = process.env.NODE_ENV === 'production'
-  ? {
-      rejectUnauthorized: true,
-      // Set DB_CA_CERT env var to your database CA certificate in production
-      ...(process.env.DB_CA_CERT && { ca: process.env.DB_CA_CERT }),
-    }
+const sslConfig = process.env.DATABASE_URL?.includes('supabase')
+  ? { rejectUnauthorized: false }
+  : process.env.NODE_ENV === 'production'
+  ? { rejectUnauthorized: true }
   : false;
 
 export const pool = new Pool({
