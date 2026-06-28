@@ -58,15 +58,7 @@
     ],
     "scheme": "mechanic-marketplace",
     "extra": {
-      "eas": {
-        "projectId": "mechanic-marketplace"
-      }
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/mechanic-marketplace"
+      "eas": {}
     }
   }
 }
