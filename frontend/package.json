@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "expo": "^51.0.28",
-    "expo-modules-core": "^1.11.13",
     "expo-status-bar": "~1.12.1",
     "expo-router": "~3.5.0",
     "expo-location": "~17.0.1",
@@ -38,9 +37,6 @@
     "date-fns": "^3.0.6",
     "@expo/vector-icons": "^14.0.0",
     "@react-native-async-storage/async-storage": "^1.23.1"
-  },
-  "overrides": {
-    "expo-modules-core": "^1.11.13"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
