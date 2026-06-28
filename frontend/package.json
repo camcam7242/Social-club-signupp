@@ -38,7 +38,7 @@
     "@react-native-async-storage/async-storage": "^1.23.1"
   },
   "overrides": {
-    "expo-modules-core": "~1.12.22"
+    "expo-modules-core": "^1.11.13"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
