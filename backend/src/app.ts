@@ -23,8 +23,32 @@ import jobNotesRoutes from './routes/jobNotes';
 import promoRoutes from './routes/promo';
 import { errorHandler } from './middleware/errorHandler';
 import { apiLimiter } from './middleware/rateLimit';
+import { pool } from './config/database';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
+
+async function runMigrations() {
+  const client = await pool.connect();
+  try {
+    await client.query(`CREATE TABLE IF NOT EXISTS migrations (id SERIAL PRIMARY KEY, filename TEXT UNIQUE NOT NULL, run_at TIMESTAMPTZ DEFAULT NOW())`);
+    const migrationsDir = path.join(__dirname, '../migrations');
+    if (!fs.existsSync(migrationsDir)) return;
+    const files = fs.readdirSync(migrationsDir).filter(f => f.endsWith('.sql')).sort();
+    for (const file of files) {
+      const { rows } = await client.query('SELECT id FROM migrations WHERE filename = $1', [file]);
+      if (rows.length > 0) continue;
+      console.log(`Running migration: ${file}`);
+      const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+      await client.query(sql);
+      await client.query('INSERT INTO migrations (filename) VALUES ($1)', [file]);
+      console.log(`Done: ${file}`);
+    }
+  } finally {
+    client.release();
+  }
+}
 
 // Fail fast if critical env vars are missing
 const REQUIRED_ENV = ['JWT_SECRET', 'JWT_REFRESH_SECRET', 'STRIPE_SECRET_KEY', 'DATABASE_URL'];
@@ -79,6 +103,8 @@ app.get('/health', (_req, res) => res.json({ status: 'ok', ts: Date.now() }));
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+runMigrations()
+  .then(() => server.listen(PORT, () => console.log(`Server running on port ${PORT}`)))
+  .catch((err) => { console.error('Migration failed', err); process.exit(1); });
 
 export default app;
