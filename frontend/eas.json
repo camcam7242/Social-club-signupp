@@ -23,7 +23,7 @@
         "simulator": false
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://your-backend-url.com/api",
+        "EXPO_PUBLIC_API_URL": "https://social-club-signupp.onrender.com/api",
         "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_test_your_key_here"
       }
     },
@@ -32,7 +32,7 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://your-backend-url.com/api",
+        "EXPO_PUBLIC_API_URL": "https://social-club-signupp.onrender.com/api",
         "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_live_your_key_here"
       }
     }
