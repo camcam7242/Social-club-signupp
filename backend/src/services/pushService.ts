@@ -14,7 +14,7 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
   );
   if (!rows.length) return;
 
-  const messages = rows.map((r) => ({
+  const messages = rows.map((r: { token: string }) => ({
     to: r.token,
     sound: 'default',
     title: payload.title,
