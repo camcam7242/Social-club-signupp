@@ -35,7 +35,7 @@
     "zod": "^3.22.4",
     "date-fns": "^3.0.6",
     "@expo/vector-icons": "^14.0.0",
-    "@stripe/stripe-terminal-react-native": "^1.2.1",
+    "@stripe/stripe-terminal-react-native": "0.0.1-beta.31",
     "@react-native-async-storage/async-storage": "^1.23.1"
   },
   "devDependencies": {
