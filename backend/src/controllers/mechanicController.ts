@@ -285,9 +285,6 @@ export const getMechanicEta = async (req: Request, res: Response, next: NextFunc
     if (mech.current_lat == null || mech.current_lng == null) {
       throw new AppError('Mechanic location not available', 404);
     }
-
-    const customerLat = parseFloat(lat as string);
-    const customerLng = parseFloat(lng as string);
     const mechLat = parseFloat(mech.current_lat);
     const mechLng = parseFloat(mech.current_lng);
 

@@ -7,12 +7,12 @@ import { AppError } from '../middleware/errorHandler';
 
 const signAccess = (userId: string, role: string) =>
   jwt.sign({ userId, role }, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '15m',
+    expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as any,
   });
 
 const signRefresh = (userId: string) =>
   jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET!, {
-    expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+    expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN || '7d') as any,
   });
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
