@@ -19,7 +19,6 @@
         "NSCameraUsageDescription": "Take photos of your vehicle issue.",
         "NSPhotoLibraryUsageDescription": "Upload photos of your vehicle issue."
       },
-      "merchantId": "merchant.com.mechanicmarketplace",
       "entitlements": {
         "com.apple.developer.proximity-reader.payment.acceptance": true
       }
