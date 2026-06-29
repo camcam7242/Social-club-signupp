@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
 import { Platform } from 'react-native';
 import { pushApi } from '../services/api';
 
@@ -19,7 +18,7 @@ export function usePushNotifications() {
 }
 
 async function registerForPush() {
-  if (!Device.isDevice) return;
+  // Skip device check — assume physical device in production builds
 
   const { status: existing } = await Notifications.getPermissionsAsync();
   let finalStatus = existing;
