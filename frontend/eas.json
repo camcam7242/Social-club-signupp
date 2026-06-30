@@ -25,7 +25,7 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://social-club-signupp.onrender.com/api",
-        "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_test_your_key_here",
+        "EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY": "pk_test_51TnIQlEGhBD4fw3nkBJO4LvKUIoS5IfnavmS2BZ0TkHJ3iyc985JMjdo2BLkpEDD0eeVYH4PdsQ0cIL7lTrNqA6e00nzwO5Ce3",
         "EAS_SKIP_AUTO_FINGERPRINT": "1"
       }
     },
