@@ -91,29 +91,29 @@ export default function PromoCodeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#0f172a' },
   inner: { flex: 1, padding: 28, justifyContent: 'center' },
   headerEmoji: { fontSize: 52, textAlign: 'center', marginBottom: 16 },
-  title: { fontSize: 28, fontWeight: '800', color: '#111', textAlign: 'center', marginBottom: 10 },
-  subtitle: { fontSize: 15, color: '#6b7280', textAlign: 'center', lineHeight: 22, marginBottom: 32 },
+  title: { fontSize: 28, fontWeight: '800', color: '#f1f5f9', textAlign: 'center', marginBottom: 10 },
+  subtitle: { fontSize: 15, color: '#94a3b8', textAlign: 'center', lineHeight: 22, marginBottom: 32 },
   input: {
     borderWidth: 2, borderColor: '#1a56db', borderRadius: 14,
-    padding: 16, fontSize: 20, color: '#111', textAlign: 'center',
+    padding: 16, fontSize: 20, color: '#f1f5f9', textAlign: 'center',
     letterSpacing: 2, fontWeight: '700', marginBottom: 16, backgroundColor: '#f0f7ff',
   },
   redeemBtn: { backgroundColor: '#1a56db', borderRadius: 14, padding: 17, alignItems: 'center', marginBottom: 12 },
   redeemBtnDisabled: { backgroundColor: '#93c5fd' },
   redeemBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
   skipBtn: { alignItems: 'center', padding: 12 },
-  skipBtnText: { color: '#9ca3af', fontSize: 14 },
-  successContainer: { flex: 1, backgroundColor: '#fff', padding: 28, justifyContent: 'center', alignItems: 'center' },
+  skipBtnText: { color: '#64748b', fontSize: 14 },
+  successContainer: { flex: 1, backgroundColor: '#0f172a', padding: 28, justifyContent: 'center', alignItems: 'center' },
   successIcon: {
     width: 100, height: 100, borderRadius: 50, backgroundColor: '#f0fdf4',
     alignItems: 'center', justifyContent: 'center', marginBottom: 20,
   },
   successEmoji: { fontSize: 48 },
-  successTitle: { fontSize: 30, fontWeight: '800', color: '#111', marginBottom: 10 },
-  successDesc: { fontSize: 15, color: '#6b7280', textAlign: 'center', marginBottom: 24, lineHeight: 22 },
+  successTitle: { fontSize: 30, fontWeight: '800', color: '#f1f5f9', marginBottom: 10 },
+  successDesc: { fontSize: 15, color: '#94a3b8', textAlign: 'center', marginBottom: 24, lineHeight: 22 },
   benefitCard: {
     backgroundColor: '#f0fdf4', borderRadius: 14, padding: 20,
     alignSelf: 'stretch', marginBottom: 28,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   benefitTitle: { fontSize: 15, fontWeight: '700', color: '#166534', marginBottom: 12 },
   benefitRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 },
   benefitDot: { color: '#10b981', fontWeight: '700', fontSize: 16 },
-  benefitText: { fontSize: 14, color: '#374151' },
+  benefitText: { fontSize: 14, color: '#cbd5e1' },
   primaryBtn: { backgroundColor: '#1a56db', borderRadius: 14, padding: 17, alignItems: 'center', alignSelf: 'stretch' },
   primaryBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
 });

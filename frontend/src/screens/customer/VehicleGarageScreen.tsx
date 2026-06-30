@@ -109,29 +109,29 @@ export default function VehicleGarageScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: '#0f172a' },
   card: {
-    backgroundColor: '#fff', borderRadius: 12, padding: 16,
+    backgroundColor: '#0f172a', borderRadius: 12, padding: 16,
     marginBottom: 12, flexDirection: 'row', alignItems: 'center',
     shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
   },
-  vehicleName: { fontSize: 17, fontWeight: '600', color: '#111' },
-  vehicleDetail: { fontSize: 13, color: '#6b7280', marginTop: 2 },
+  vehicleName: { fontSize: 17, fontWeight: '600', color: '#f1f5f9' },
+  vehicleDetail: { fontSize: 13, color: '#94a3b8', marginTop: 2 },
   deleteBtn: { color: '#ef4444', fontSize: 14, fontWeight: '500' },
-  empty: { textAlign: 'center', color: '#9ca3af', marginTop: 60, fontSize: 15 },
+  empty: { textAlign: 'center', color: '#64748b', marginTop: 60, fontSize: 15 },
   fab: {
     margin: 16, backgroundColor: '#1a56db', borderRadius: 12,
     padding: 16, alignItems: 'center',
   },
   fabText: { color: '#fff', fontWeight: '600', fontSize: 16 },
-  modal: { flex: 1, padding: 24, backgroundColor: '#fff' },
+  modal: { flex: 1, padding: 24, backgroundColor: '#0f172a' },
   modalTitle: { fontSize: 22, fontWeight: '700', marginBottom: 24, marginTop: 16 },
   input: {
-    borderWidth: 1, borderColor: '#d1d5db', borderRadius: 12,
-    padding: 14, fontSize: 15, marginBottom: 12, backgroundColor: '#f9fafb',
+    borderWidth: 1, borderColor: '#334155', borderRadius: 12,
+    padding: 14, fontSize: 15, marginBottom: 12, backgroundColor: '#0f172a',
   },
   button: { backgroundColor: '#1a56db', borderRadius: 12, padding: 16, alignItems: 'center', marginTop: 8 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
   cancel: { alignItems: 'center', marginTop: 16 },
-  cancelText: { color: '#6b7280', fontSize: 15 },
+  cancelText: { color: '#94a3b8', fontSize: 15 },
 });

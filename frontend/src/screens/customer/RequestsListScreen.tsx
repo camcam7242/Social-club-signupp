@@ -57,17 +57,17 @@ export default function RequestsListScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: '#0f172a' },
   card: {
-    backgroundColor: '#fff', borderRadius: 12, padding: 16,
+    backgroundColor: '#0f172a', borderRadius: 12, padding: 16,
     marginBottom: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
   },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  serviceType: { fontSize: 16, fontWeight: '700', color: '#111' },
+  serviceType: { fontSize: 16, fontWeight: '700', color: '#f1f5f9' },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
   badgeText: { fontSize: 12, fontWeight: '600', textTransform: 'capitalize' },
-  vehicle: { fontSize: 13, color: '#6b7280', marginBottom: 6 },
-  description: { fontSize: 14, color: '#374151' },
+  vehicle: { fontSize: 13, color: '#94a3b8', marginBottom: 6 },
+  description: { fontSize: 14, color: '#cbd5e1' },
   quotesCount: { marginTop: 8, fontSize: 13, color: '#1a56db', fontWeight: '500' },
-  empty: { textAlign: 'center', color: '#9ca3af', marginTop: 60, fontSize: 15 },
+  empty: { textAlign: 'center', color: '#64748b', marginTop: 60, fontSize: 15 },
 });

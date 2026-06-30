@@ -26,14 +26,14 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9fafb', padding: 24 },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0f172a', padding: 24 },
   avatar: {
     width: 80, height: 80, borderRadius: 40, backgroundColor: '#1a56db',
     alignItems: 'center', justifyContent: 'center', marginBottom: 16,
   },
   avatarText: { color: '#fff', fontSize: 32, fontWeight: '700' },
-  email: { fontSize: 18, fontWeight: '600', color: '#111', marginBottom: 4 },
-  role: { fontSize: 14, color: '#6b7280', textTransform: 'capitalize', marginBottom: 40 },
+  email: { fontSize: 18, fontWeight: '600', color: '#f1f5f9', marginBottom: 4 },
+  role: { fontSize: 14, color: '#94a3b8', textTransform: 'capitalize', marginBottom: 40 },
   logoutBtn: {
     borderWidth: 1.5, borderColor: '#ef4444', borderRadius: 12,
     paddingVertical: 12, paddingHorizontal: 40,

@@ -90,20 +90,20 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, padding: 24, backgroundColor: '#fff', justifyContent: 'center' },
+  container: { flexGrow: 1, padding: 24, backgroundColor: '#0f172a', justifyContent: 'center' },
   logoArea: { alignItems: 'center', marginBottom: 32 },
   logoCircle: {
-    width: 72, height: 72, borderRadius: 36, backgroundColor: '#eff6ff',
+    width: 72, height: 72, borderRadius: 36, backgroundColor: '#1e3a5f',
     alignItems: 'center', justifyContent: 'center', marginBottom: 10,
   },
   logoEmoji: { fontSize: 36 },
   appName: { fontSize: 20, fontWeight: '800', color: '#1a56db' },
-  title: { fontSize: 26, fontWeight: '800', color: '#111', marginBottom: 6 },
-  subtitle: { fontSize: 15, color: '#6b7280', marginBottom: 28 },
-  label: { fontSize: 13, fontWeight: '600', color: '#374151', marginBottom: 6 },
+  title: { fontSize: 26, fontWeight: '800', color: '#f1f5f9', marginBottom: 6 },
+  subtitle: { fontSize: 15, color: '#94a3b8', marginBottom: 28 },
+  label: { fontSize: 13, fontWeight: '600', color: '#cbd5e1', marginBottom: 6 },
   input: {
-    borderWidth: 1.5, borderColor: '#e5e7eb', borderRadius: 12,
-    padding: 15, fontSize: 15, marginBottom: 14, backgroundColor: '#f9fafb',
+    borderWidth: 1.5, borderColor: '#334155', borderRadius: 12,
+    padding: 15, fontSize: 15, marginBottom: 14, backgroundColor: '#0f172a',
   },
   forgotRow: { alignItems: 'flex-end', marginBottom: 20, marginTop: -8 },
   forgotText: { color: '#1a56db', fontSize: 14, fontWeight: '500' },
@@ -113,15 +113,15 @@ const styles = StyleSheet.create({
   primaryBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
   dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 20 },
   dividerLine: { flex: 1, height: 1, backgroundColor: '#e5e7eb' },
-  dividerText: { color: '#9ca3af', fontSize: 13 },
+  dividerText: { color: '#64748b', fontSize: 13 },
   secondaryBtn: {
-    borderWidth: 1.5, borderColor: '#e5e7eb', borderRadius: 14,
+    borderWidth: 1.5, borderColor: '#334155', borderRadius: 14,
     padding: 16, alignItems: 'center', marginBottom: 12,
   },
-  secondaryBtnText: { color: '#374151', fontWeight: '600', fontSize: 15 },
+  secondaryBtnText: { color: '#cbd5e1', fontWeight: '600', fontSize: 15 },
   proBtn: {
     borderWidth: 1.5, borderColor: '#1a56db', borderRadius: 14,
-    padding: 16, alignItems: 'center', backgroundColor: '#eff6ff',
+    padding: 16, alignItems: 'center', backgroundColor: '#1e3a5f',
   },
   proBtnText: { color: '#1a56db', fontWeight: '700', fontSize: 15 },
 });

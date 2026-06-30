@@ -141,17 +141,17 @@ export default function ForgotPasswordScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#0f172a' },
   inner: { flex: 1, padding: 24, justifyContent: 'center' },
   backBtn: { position: 'absolute', top: 56, left: 24 },
-  backArrow: { fontSize: 28, color: '#374151' },
-  title: { fontSize: 28, fontWeight: '800', color: '#111', marginBottom: 10 },
-  subtitle: { fontSize: 15, color: '#6b7280', lineHeight: 22, marginBottom: 32 },
+  backArrow: { fontSize: 28, color: '#cbd5e1' },
+  title: { fontSize: 28, fontWeight: '800', color: '#f1f5f9', marginBottom: 10 },
+  subtitle: { fontSize: 15, color: '#94a3b8', lineHeight: 22, marginBottom: 32 },
   emailHighlight: { color: '#1a56db', fontWeight: '600' },
-  label: { fontSize: 13, fontWeight: '600', color: '#374151', marginBottom: 6, marginTop: 4 },
+  label: { fontSize: 13, fontWeight: '600', color: '#cbd5e1', marginBottom: 6, marginTop: 4 },
   input: {
-    borderWidth: 1.5, borderColor: '#e5e7eb', borderRadius: 12,
-    padding: 15, fontSize: 15, marginBottom: 14, backgroundColor: '#f9fafb',
+    borderWidth: 1.5, borderColor: '#334155', borderRadius: 12,
+    padding: 15, fontSize: 15, marginBottom: 14, backgroundColor: '#0f172a',
   },
   primaryBtn: {
     backgroundColor: '#1a56db', borderRadius: 14,

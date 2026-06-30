@@ -136,31 +136,31 @@ export default function CreateRequestScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
-  section: { fontSize: 16, fontWeight: '700', color: '#111', marginTop: 20, marginBottom: 10 },
+  container: { flex: 1, backgroundColor: '#0f172a' },
+  section: { fontSize: 16, fontWeight: '700', color: '#f1f5f9', marginTop: 20, marginBottom: 10 },
   option: {
-    padding: 14, borderRadius: 10, borderWidth: 2, borderColor: '#e5e7eb',
-    marginBottom: 8, backgroundColor: '#fff',
+    padding: 14, borderRadius: 10, borderWidth: 2, borderColor: '#334155',
+    marginBottom: 8, backgroundColor: '#0f172a',
   },
-  optionActive: { borderColor: '#1a56db', backgroundColor: '#eff6ff' },
-  optionText: { fontSize: 15, color: '#374151' },
+  optionActive: { borderColor: '#1a56db', backgroundColor: '#1e3a5f' },
+  optionText: { fontSize: 15, color: '#cbd5e1' },
   optionTextActive: { color: '#1a56db', fontWeight: '600' },
   addLink: { color: '#1a56db', fontSize: 15, marginBottom: 8 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: {
     paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20,
-    borderWidth: 1.5, borderColor: '#d1d5db', backgroundColor: '#fff',
+    borderWidth: 1.5, borderColor: '#334155', backgroundColor: '#0f172a',
   },
-  chipActive: { borderColor: '#1a56db', backgroundColor: '#eff6ff' },
-  chipText: { fontSize: 13, color: '#374151' },
+  chipActive: { borderColor: '#1a56db', backgroundColor: '#1e3a5f' },
+  chipText: { fontSize: 13, color: '#cbd5e1' },
   chipTextActive: { color: '#1a56db', fontWeight: '600' },
   textarea: {
-    borderWidth: 1, borderColor: '#d1d5db', borderRadius: 12,
-    padding: 14, fontSize: 15, backgroundColor: '#fff', minHeight: 100,
+    borderWidth: 1, borderColor: '#334155', borderRadius: 12,
+    padding: 14, fontSize: 15, backgroundColor: '#0f172a', minHeight: 100,
   },
   locationBtn: {
     borderWidth: 1.5, borderColor: '#1a56db', borderRadius: 12,
-    padding: 14, alignItems: 'center', backgroundColor: '#eff6ff',
+    padding: 14, alignItems: 'center', backgroundColor: '#1e3a5f',
   },
   locationBtnText: { color: '#1a56db', fontSize: 15, fontWeight: '500' },
   submitBtn: {

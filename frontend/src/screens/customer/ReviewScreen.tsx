@@ -75,21 +75,21 @@ export default function ReviewScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 24, justifyContent: 'center' },
-  title: { fontSize: 26, fontWeight: '700', color: '#111', textAlign: 'center', marginBottom: 8 },
-  subtitle: { fontSize: 16, color: '#6b7280', textAlign: 'center', marginBottom: 32 },
+  container: { flex: 1, backgroundColor: '#0f172a', padding: 24, justifyContent: 'center' },
+  title: { fontSize: 26, fontWeight: '700', color: '#f1f5f9', textAlign: 'center', marginBottom: 8 },
+  subtitle: { fontSize: 16, color: '#94a3b8', textAlign: 'center', marginBottom: 32 },
   starsRow: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginBottom: 8 },
   star: { fontSize: 44, color: '#e5e7eb' },
   starActive: { color: '#f59e0b' },
-  ratingLabel: { textAlign: 'center', color: '#6b7280', fontSize: 15, marginBottom: 24, height: 20 },
+  ratingLabel: { textAlign: 'center', color: '#94a3b8', fontSize: 15, marginBottom: 24, height: 20 },
   textarea: {
-    borderWidth: 1, borderColor: '#d1d5db', borderRadius: 12,
-    padding: 14, fontSize: 15, backgroundColor: '#f9fafb',
+    borderWidth: 1, borderColor: '#334155', borderRadius: 12,
+    padding: 14, fontSize: 15, backgroundColor: '#0f172a',
     minHeight: 120, marginBottom: 20,
   },
   submitBtn: { backgroundColor: '#1a56db', borderRadius: 12, padding: 16, alignItems: 'center' },
   submitBtnDisabled: { backgroundColor: '#93c5fd' },
   submitBtnText: { color: '#fff', fontWeight: '700', fontSize: 16 },
   skip: { alignItems: 'center', marginTop: 16 },
-  skipText: { color: '#9ca3af', fontSize: 14 },
+  skipText: { color: '#64748b', fontSize: 14 },
 });

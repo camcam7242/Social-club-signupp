@@ -72,21 +72,21 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, justifyContent: 'center', padding: 24, backgroundColor: '#fff' },
-  title: { fontSize: 28, fontWeight: '700', color: '#111', marginBottom: 8 },
-  subtitle: { fontSize: 16, color: '#6b7280', marginBottom: 32 },
-  label: { fontSize: 14, fontWeight: '600', color: '#374151', marginBottom: 8 },
+  container: { flexGrow: 1, justifyContent: 'center', padding: 24, backgroundColor: '#0f172a' },
+  title: { fontSize: 28, fontWeight: '700', color: '#f1f5f9', marginBottom: 8 },
+  subtitle: { fontSize: 16, color: '#94a3b8', marginBottom: 32 },
+  label: { fontSize: 14, fontWeight: '600', color: '#cbd5e1', marginBottom: 8 },
   roleRow: { flexDirection: 'row', gap: 12, marginBottom: 24 },
   roleBtn: {
     flex: 1, padding: 14, borderRadius: 12, borderWidth: 2,
-    borderColor: '#d1d5db', alignItems: 'center',
+    borderColor: '#334155', alignItems: 'center',
   },
-  roleBtnActive: { borderColor: '#1a56db', backgroundColor: '#eff6ff' },
-  roleBtnText: { fontSize: 15, fontWeight: '600', color: '#6b7280' },
+  roleBtnActive: { borderColor: '#1a56db', backgroundColor: '#1e3a5f' },
+  roleBtnText: { fontSize: 15, fontWeight: '600', color: '#94a3b8' },
   roleBtnTextActive: { color: '#1a56db' },
   input: {
-    borderWidth: 1, borderColor: '#d1d5db', borderRadius: 12,
-    padding: 16, fontSize: 16, marginBottom: 16, backgroundColor: '#f9fafb',
+    borderWidth: 1, borderColor: '#334155', borderRadius: 12,
+    padding: 16, fontSize: 16, marginBottom: 16, backgroundColor: '#0f172a',
   },
   button: {
     backgroundColor: '#1a56db', borderRadius: 12,

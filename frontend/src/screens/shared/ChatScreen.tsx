@@ -165,10 +165,10 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: '#0f172a' },
   listContent: { padding: 16, paddingBottom: 8 },
   emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  emptyText: { color: '#9ca3af', fontSize: 15 },
+  emptyText: { color: '#64748b', fontSize: 15 },
   bubbleRow: { flexDirection: 'row', marginBottom: 12 },
   bubbleRowRight: { justifyContent: 'flex-end' },
   bubble: {
@@ -179,22 +179,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a56db', borderBottomRightRadius: 4,
   },
   bubbleThem: {
-    backgroundColor: '#fff', borderBottomLeftRadius: 4,
+    backgroundColor: '#0f172a', borderBottomLeftRadius: 4,
   },
-  senderName: { fontSize: 11, fontWeight: '700', color: '#6b7280', marginBottom: 4 },
-  messageText: { fontSize: 15, color: '#111', lineHeight: 21 },
+  senderName: { fontSize: 11, fontWeight: '700', color: '#94a3b8', marginBottom: 4 },
+  messageText: { fontSize: 15, color: '#f1f5f9', lineHeight: 21 },
   messageTextMe: { color: '#fff' },
-  timestamp: { fontSize: 10, color: '#9ca3af', marginTop: 4, textAlign: 'right' },
+  timestamp: { fontSize: 10, color: '#64748b', marginTop: 4, textAlign: 'right' },
   timestampMe: { color: 'rgba(255,255,255,0.6)' },
   inputRow: {
     flexDirection: 'row', alignItems: 'flex-end', padding: 12,
-    backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#e5e7eb',
+    backgroundColor: '#0f172a', borderTopWidth: 1, borderTopColor: '#e5e7eb',
     gap: 8,
   },
   input: {
-    flex: 1, minHeight: 42, maxHeight: 120, backgroundColor: '#f3f4f6',
+    flex: 1, minHeight: 42, maxHeight: 120, backgroundColor: '#0f172a',
     borderRadius: 21, paddingHorizontal: 16, paddingVertical: 10,
-    fontSize: 15, color: '#111',
+    fontSize: 15, color: '#f1f5f9',
   },
   sendBtn: {
     backgroundColor: '#1a56db', borderRadius: 21, paddingHorizontal: 18,

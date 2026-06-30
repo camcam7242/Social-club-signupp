@@ -109,9 +109,9 @@ function Row({ label, value, mono }: { label: string; value: string; mono?: bool
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
+  container: { flex: 1, backgroundColor: '#0f172a' },
   receiptCard: {
-    backgroundColor: '#fff', borderRadius: 16, width: '100%',
+    backgroundColor: '#0f172a', borderRadius: 16, width: '100%',
     shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 12, elevation: 5,
     overflow: 'hidden',
   },
@@ -125,24 +125,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10, paddingVertical: 4, transform: [{ rotate: '-15deg' }],
   },
   paidText: { color: '#10b981', fontWeight: '800', fontSize: 18, letterSpacing: 2 },
-  divider: { height: 1, backgroundColor: '#f3f4f6', marginHorizontal: 20 },
+  divider: { height: 1, backgroundColor: '#0f172a', marginHorizontal: 20 },
   detailsSection: { padding: 20 },
   row: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
-  rowLabel: { fontSize: 13, color: '#9ca3af', flex: 1 },
-  rowValue: { fontSize: 13, color: '#374151', fontWeight: '500', flex: 2, textAlign: 'right' },
-  rowValueMono: { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', color: '#111' },
+  rowLabel: { fontSize: 13, color: '#64748b', flex: 1 },
+  rowValue: { fontSize: 13, color: '#cbd5e1', fontWeight: '500', flex: 2, textAlign: 'right' },
+  rowValueMono: { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', color: '#f1f5f9' },
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20 },
-  totalLabel: { fontSize: 16, fontWeight: '700', color: '#111' },
+  totalLabel: { fontSize: 16, fontWeight: '700', color: '#f1f5f9' },
   totalAmount: { fontSize: 28, fontWeight: '800', color: '#1a56db' },
   perfRow: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginTop: 4 },
-  perfDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#f9fafb' },
-  thankYou: { textAlign: 'center', fontSize: 13, color: '#9ca3af', padding: 16, paddingTop: 8 },
+  perfDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#0f172a' },
+  thankYou: { textAlign: 'center', fontSize: 13, color: '#64748b', padding: 16, paddingTop: 8 },
   shareBtn: {
     backgroundColor: '#1a56db', borderRadius: 14, padding: 16,
     alignItems: 'center', marginTop: 20, width: '100%',
   },
   shareBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
-  empty: { textAlign: 'center', marginTop: 60, color: '#9ca3af', fontSize: 15 },
+  empty: { textAlign: 'center', marginTop: 60, color: '#64748b', fontSize: 15 },
 });
 
 const Platform = require('react-native').Platform;

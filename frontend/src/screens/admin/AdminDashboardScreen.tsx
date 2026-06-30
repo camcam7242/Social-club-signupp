@@ -81,27 +81,27 @@ export default function AdminDashboardScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9fafb' },
-  heading: { fontSize: 22, fontWeight: '700', color: '#111', marginBottom: 16 },
+  container: { flex: 1, backgroundColor: '#0f172a' },
+  heading: { fontSize: 22, fontWeight: '700', color: '#f1f5f9', marginBottom: 16 },
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 24 },
   statCard: {
-    width: '47%', backgroundColor: '#fff', borderRadius: 10,
+    width: '47%', backgroundColor: '#0f172a', borderRadius: 10,
     padding: 14, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
   },
   statValue: { fontSize: 22, fontWeight: '700', color: '#1a56db' },
-  statLabel: { fontSize: 12, color: '#6b7280', marginTop: 4 },
-  sectionTitle: { fontSize: 17, fontWeight: '700', color: '#111', marginBottom: 12 },
+  statLabel: { fontSize: 12, color: '#94a3b8', marginTop: 4 },
+  sectionTitle: { fontSize: 17, fontWeight: '700', color: '#f1f5f9', marginBottom: 12 },
   mechanicCard: {
-    backgroundColor: '#fff', borderRadius: 10, padding: 14, marginBottom: 10,
+    backgroundColor: '#0f172a', borderRadius: 10, padding: 14, marginBottom: 10,
     shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
   },
-  mechanicEmail: { fontSize: 15, fontWeight: '600', color: '#111' },
-  mechanicBusiness: { fontSize: 13, color: '#6b7280', marginTop: 2 },
-  docCount: { fontSize: 12, color: '#9ca3af', marginTop: 4, marginBottom: 12 },
+  mechanicEmail: { fontSize: 15, fontWeight: '600', color: '#f1f5f9' },
+  mechanicBusiness: { fontSize: 13, color: '#94a3b8', marginTop: 2 },
+  docCount: { fontSize: 12, color: '#64748b', marginTop: 4, marginBottom: 12 },
   actionRow: { flexDirection: 'row', gap: 10 },
   approveBtn: { flex: 1, backgroundColor: '#10b981', borderRadius: 8, padding: 10, alignItems: 'center' },
   approveBtnText: { color: '#fff', fontWeight: '600' },
   rejectBtn: { flex: 1, backgroundColor: '#fee2e2', borderRadius: 8, padding: 10, alignItems: 'center' },
   rejectBtnText: { color: '#ef4444', fontWeight: '600' },
-  empty: { textAlign: 'center', color: '#9ca3af', marginTop: 20, fontSize: 14 },
+  empty: { textAlign: 'center', color: '#64748b', marginTop: 20, fontSize: 14 },
 });
