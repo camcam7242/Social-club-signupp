@@ -50,7 +50,16 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
 export const registerProfessional = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, password, phone, business_name, bio, service_radius_km = 25 } = req.body;
+    const {
+      email, password, phone, business_name, bio,
+      service_radius_km = 25,
+      tier = 'basic',
+      specialties = [],
+    } = req.body;
+
+    if (!['basic', 'certified', 'master'].includes(tier)) {
+      throw new AppError('Invalid tier');
+    }
 
     const existing = await query('SELECT id FROM users WHERE email = $1', [email]);
     if (existing.rows.length) throw new AppError('Email already registered');
@@ -64,9 +73,9 @@ export const registerProfessional = async (req: Request, res: Response, next: Ne
     const user = rows[0];
 
     await query(
-      `INSERT INTO mechanics (user_id, business_name, bio, service_radius_km)
-       VALUES ($1, $2, $3, $4)`,
-      [user.id, business_name, bio, service_radius_km]
+      `INSERT INTO mechanics (user_id, business_name, bio, service_radius_km, tier, specialties)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [user.id, business_name, bio, service_radius_km, tier, specialties]
     );
 
     const accessToken = signAccess(user.id, 'mechanic');

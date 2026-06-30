@@ -114,14 +114,25 @@ export const submitQuote = async (req: Request, res: Response, next: NextFunctio
     const userId = req.user!.userId;
     const { request_id, price, estimated_duration_hours, notes } = req.body;
 
-    const mechanic = await query('SELECT id FROM mechanics WHERE user_id = $1 AND verified = TRUE', [userId]);
+    const mechanic = await query('SELECT id, tier FROM mechanics WHERE user_id = $1 AND verified = TRUE', [userId]);
     if (!mechanic.rows.length) throw new AppError('Mechanic not verified', 403);
 
     const serviceRequest = await query(
-      "SELECT id FROM service_requests WHERE id = $1 AND status = 'open'",
+      "SELECT id, service_type FROM service_requests WHERE id = $1 AND status = 'open'",
       [request_id]
     );
     if (!serviceRequest.rows.length) throw new AppError('Request not available', 404);
+
+    // Enforce tier restrictions
+    const { canMechanicDoJob } = await import('../config/jobTiers');
+    const tier = mechanic.rows[0].tier || 'basic';
+    const jobType = serviceRequest.rows[0].service_type;
+    if (!canMechanicDoJob(tier, jobType)) {
+      throw new AppError(
+        `Your ${tier} tier does not allow quoting on "${jobType}" jobs. Upload certifications to unlock more job types.`,
+        403
+      );
+    }
 
     const existing = await query(
       "SELECT id FROM quotes WHERE request_id = $1 AND mechanic_id = $2 AND status = 'pending'",

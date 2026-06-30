@@ -17,7 +17,31 @@ const SERVICE_TYPES = [
   'Electrical', 'Suspension', 'Exhaust', 'General Repair',
 ];
 
-const STEPS = ['Account', 'Business', 'Services', 'Done'];
+const STEPS = ['Account', 'Business', 'Tier', 'Services', 'Done'];
+
+const TIERS = [
+  {
+    id: 'basic',
+    label: '🔧 Basic Technician',
+    subtitle: 'No certification required',
+    desc: 'Flat tire, oil change, battery, brakes, wipers, air filter, jump start',
+    color: '#10b981',
+  },
+  {
+    id: 'certified',
+    label: '🏅 Certified Mechanic',
+    subtitle: 'ASE or equivalent certification',
+    desc: 'Everything in Basic + engine diagnostics, AC, transmission, suspension, electrical',
+    color: '#1a56db',
+  },
+  {
+    id: 'master',
+    label: '⭐ Master Technician',
+    subtitle: 'Master ASE or manufacturer cert',
+    desc: 'All job types — no restrictions',
+    color: '#f59e0b',
+  },
+];
 
 export default function ProfessionalSignupScreen() {
   const router = useRouter();
@@ -37,7 +61,10 @@ export default function ProfessionalSignupScreen() {
   const [bio, setBio] = useState('');
   const [radius, setRadius] = useState('25');
 
-  // Step 2 — Services
+  // Step 2 — Tier
+  const [tier, setTier] = useState('basic');
+
+  // Step 3 — Services
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   // Restore draft on mount
@@ -52,6 +79,7 @@ export default function ProfessionalSignupScreen() {
           if (d.businessName) setBusinessName(d.businessName);
           if (d.bio) setBio(d.bio);
           if (d.radius) setRadius(d.radius);
+          if (d.tier) setTier(d.tier);
           if (d.selectedServices) setSelectedServices(d.selectedServices);
         } catch {}
       }
@@ -62,7 +90,7 @@ export default function ProfessionalSignupScreen() {
   // Persist draft whenever any field changes (skip passwords for security)
   const saveDraft = useCallback(() => {
     AsyncStorage.setItem(DRAFT_KEY, JSON.stringify({
-      step, email, phone, businessName, bio, radius, selectedServices,
+      step, email, phone, businessName, bio, radius, tier, selectedServices,
     }));
   }, [step, email, phone, businessName, bio, radius, selectedServices]);
 
@@ -84,7 +112,7 @@ export default function ProfessionalSignupScreen() {
     if (step === 1) {
       if (!businessName.trim()) return Alert.alert('Required', 'Enter your business name');
     }
-    if (step < 2) { setStep(s => s + 1); return; }
+    if (step < 3) { setStep(s => s + 1); return; }
     handleSubmit();
   };
 
@@ -98,6 +126,8 @@ export default function ProfessionalSignupScreen() {
         business_name: businessName.trim(),
         bio: bio.trim(),
         service_radius_km: parseInt(radius) || 25,
+        tier,
+        specialties: selectedServices,
       });
       await SecureStore.setItemAsync('accessToken', data.accessToken);
       await SecureStore.setItemAsync('refreshToken', data.refreshToken);
@@ -111,7 +141,7 @@ export default function ProfessionalSignupScreen() {
     }
   };
 
-  const progressPct = ((step) / (STEPS.length - 1)) * 100;
+  const progressPct = (step / 4) * 100;
 
   if (!draftLoaded) return <ActivityIndicator style={{ flex: 1 }} />;
 
@@ -124,7 +154,7 @@ export default function ProfessionalSignupScreen() {
             <TouchableOpacity onPress={() => step > 0 ? setStep(s => s - 1) : router.back()} style={styles.backBtn}>
               <Text style={styles.backArrow}>←</Text>
             </TouchableOpacity>
-            <Text style={styles.stepLabel}>{STEPS[step]} · Step {step + 1} of 3</Text>
+            <Text style={styles.stepLabel}>{STEPS[step]} · Step {step + 1} of 4</Text>
           </View>
         )}
 
@@ -203,8 +233,37 @@ export default function ProfessionalSignupScreen() {
           </View>
         )}
 
-        {/* ── Step 2: Services ── */}
+        {/* ── Step 2: Tier ── */}
         {step === 2 && (
+          <View style={styles.stepContent}>
+            <Text style={styles.title}>Your Skill Level</Text>
+            <Text style={styles.subtitle}>Choose the tier that matches your experience. You'll only see jobs you're qualified for.</Text>
+
+            {TIERS.map(t => (
+              <TouchableOpacity
+                key={t.id}
+                style={[styles.tierCard, tier === t.id && { borderColor: t.color, backgroundColor: '#1e293b' }]}
+                onPress={() => setTier(t.id)}
+              >
+                <View style={styles.tierHeader}>
+                  <Text style={[styles.tierLabel, tier === t.id && { color: t.color }]}>{t.label}</Text>
+                  {tier === t.id && <Text style={[styles.tierCheck, { color: t.color }]}>✓</Text>}
+                </View>
+                <Text style={styles.tierSubtitle}>{t.subtitle}</Text>
+                <Text style={styles.tierDesc}>{t.desc}</Text>
+              </TouchableOpacity>
+            ))}
+
+            <View style={styles.infoBox}>
+              <Text style={styles.infoText}>
+                📋 Certified and Master tiers require you to upload proof of certification in your profile. Admin will verify before unlocking those job types.
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {/* ── Step 3: Services ── */}
+        {step === 3 && (
           <View style={styles.stepContent}>
             <Text style={styles.title}>What Do You Offer?</Text>
             <Text style={styles.subtitle}>Select the services you provide. You can update this anytime.</Text>
@@ -225,8 +284,8 @@ export default function ProfessionalSignupScreen() {
           </View>
         )}
 
-        {/* ── Step 3: Done ── */}
-        {step === 3 && (
+        {/* ── Step 4: Done ── */}
+        {step === 4 && (
           <View style={styles.doneContent}>
             <View style={styles.doneIcon}>
               <Text style={styles.doneEmoji}>🔧</Text>
@@ -257,12 +316,12 @@ export default function ProfessionalSignupScreen() {
         )}
 
         {/* Navigation button */}
-        {step < 3 && (
+        {step < 4 && (
           <View style={styles.footer}>
             <TouchableOpacity style={styles.primaryBtn} onPress={nextStep} disabled={loading}>
               {loading
                 ? <ActivityIndicator color="#fff" />
-                : <Text style={styles.primaryBtnText}>{step === 2 ? 'Create Account' : 'Continue →'}</Text>
+                : <Text style={styles.primaryBtnText}>{step === 3 ? 'Create Account' : 'Continue →'}</Text>
               }
             </TouchableOpacity>
 
@@ -303,8 +362,17 @@ const styles = StyleSheet.create({
   radiusChipActive: { borderColor: '#1a56db', backgroundColor: '#1e3a5f' },
   radiusChipText: { color: '#94a3b8', fontWeight: '500' },
   radiusChipTextActive: { color: '#1a56db', fontWeight: '700' },
-  infoBox: { backgroundColor: '#fffbeb', borderRadius: 12, padding: 14, marginTop: 8 },
-  infoText: { color: '#fcd34d', fontSize: 13, lineHeight: 20 },
+  infoBox: { backgroundColor: '#1e293b', borderRadius: 12, padding: 14, marginTop: 8 },
+  infoText: { color: '#94a3b8', fontSize: 13, lineHeight: 20 },
+  tierCard: {
+    borderWidth: 1.5, borderColor: '#334155', borderRadius: 14,
+    padding: 16, marginBottom: 12, backgroundColor: '#0f172a',
+  },
+  tierHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
+  tierLabel: { fontSize: 16, fontWeight: '700', color: '#f1f5f9' },
+  tierCheck: { fontSize: 18, fontWeight: '700' },
+  tierSubtitle: { fontSize: 12, color: '#64748b', marginBottom: 6, fontWeight: '500' },
+  tierDesc: { fontSize: 13, color: '#94a3b8', lineHeight: 18 },
   servicesGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   serviceChip: {
     paddingHorizontal: 14, paddingVertical: 10, borderRadius: 20,
