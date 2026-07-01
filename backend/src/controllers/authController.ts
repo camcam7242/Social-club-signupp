@@ -112,7 +112,21 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       [user.id, refreshToken]
     );
 
-    res.json({ accessToken, refreshToken, user: { id: user.id, email: user.email, role: user.role } });
+    let mechanic_strike_count = 0;
+    if (user.role === 'mechanic') {
+      const { rows: mRows } = await query(
+        'SELECT strike_count FROM mechanics WHERE user_id = $1',
+        [user.id]
+      );
+      mechanic_strike_count = mRows[0]?.strike_count ?? 0;
+    }
+
+    res.json({
+      accessToken,
+      refreshToken,
+      user: { id: user.id, email: user.email, role: user.role },
+      ...(user.role === 'mechanic' && { strike_count: mechanic_strike_count }),
+    });
   } catch (err) { next(err); }
 };
 

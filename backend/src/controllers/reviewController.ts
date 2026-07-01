@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { query } from '../config/database';
 import { AppError } from '../middleware/errorHandler';
+import { sendPushToUser } from '../services/pushService';
 
 export const submitReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -42,11 +43,13 @@ export const submitReview = async (req: Request, res: Response, next: NextFuncti
         `UPDATE mechanics
          SET strike_count = strike_count + 1
          WHERE id = $1
-         RETURNING strike_count, user_id`,
+         RETURNING strike_count, user_id, suspended_at`,
         [mechanicId]
       );
 
-      if (strikeRows[0]?.strike_count >= 5 && !strikeRows[0]?.suspended_at) {
+      const { strike_count, user_id, suspended_at } = strikeRows[0] ?? {};
+
+      if (strike_count >= 5 && !suspended_at) {
         // Suspend the mechanic's account
         await query(
           `UPDATE mechanics
@@ -58,8 +61,26 @@ export const submitReview = async (req: Request, res: Response, next: NextFuncti
         );
         await query(
           `UPDATE users SET is_active = FALSE WHERE id = $1`,
-          [strikeRows[0].user_id]
+          [user_id]
         );
+        await sendPushToUser(user_id, {
+          title: '⛔ Account Suspended',
+          body: 'You have received 5 low-rated reviews. Your account has been suspended. Please contact support.',
+          data: { type: 'strike', strike_count, suspended: true },
+        });
+      } else if (strike_count < 5 && user_id) {
+        const remaining = 5 - strike_count;
+        const warningMessages: Record<number, string> = {
+          1: `You received a low-rated review. Strike 1 of 5 — ${remaining} more and your account will be suspended.`,
+          2: `Strike 2 of 5 — ${remaining} more low-rated reviews will suspend your account.`,
+          3: `⚠️ Strike 3 of 5 — only ${remaining} more low-rated reviews before suspension. Please improve your service quality.`,
+          4: `🚨 Final warning! Strike 4 of 5 — ONE more low-rated review will suspend your account immediately.`,
+        };
+        await sendPushToUser(user_id, {
+          title: `Strike ${strike_count} of 5`,
+          body: warningMessages[strike_count] ?? `Strike ${strike_count} of 5 issued.`,
+          data: { type: 'strike', strike_count, suspended: false },
+        });
       }
     }
 

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
+import { Alert } from 'react-native';
 import { User } from '../types';
 import { authApi } from '../services/api';
 
@@ -36,6 +37,20 @@ export const useAuthStore = create<AuthState>((set) => ({
     await SecureStore.setItemAsync('accessToken', data.accessToken);
     await SecureStore.setItemAsync('refreshToken', data.refreshToken);
     set({ user: data.user, isAuthenticated: true });
+
+    // Show strike warning alert for mechanics on login
+    if (data.user.role === 'mechanic' && data.strike_count > 0) {
+      const count = data.strike_count;
+      const remaining = 5 - count;
+      const title = count >= 4 ? '🚨 Final Warning' : `⚠️ Strike Warning (${count}/5)`;
+      const message =
+        count >= 5
+          ? 'Your account has been suspended due to 5 low-rated reviews. Please contact support.'
+          : count === 4
+          ? `You have ${count} strikes. ONE more low-rated review (1–2 stars) will immediately suspend your account.`
+          : `You have ${count} of 5 strikes. ${remaining} more low-rated review${remaining !== 1 ? 's' : ''} will suspend your account. Please maintain high service quality.`;
+      setTimeout(() => Alert.alert(title, message, [{ text: 'Understood' }]), 800);
+    }
   },
 
   register: async (form) => {
