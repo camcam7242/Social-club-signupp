@@ -6,11 +6,11 @@ const router = Router();
 router.use(authenticate, requireRole('admin'));
 
 router.get('/mechanics/pending', getPendingMechanics);
+router.get('/mechanics/strikes', getSuspendedMechanics);
 router.put('/mechanics/:mechanicId/verify', verifyMechanic);
+router.put('/mechanics/:mechanicId/clear-strikes', clearMechanicStrikes);
 router.put('/users/:userId/suspend', suspendUser);
 router.get('/analytics', getAnalytics);
 router.get('/disputes', getDisputes);
-router.get('/mechanics/strikes', getSuspendedMechanics);
-router.put('/mechanics/:mechanicId/clear-strikes', clearMechanicStrikes);
 
 export default router;

@@ -49,7 +49,7 @@ export const submitReview = async (req: Request, res: Response, next: NextFuncti
 
       const { strike_count, user_id, suspended_at } = strikeRows[0] ?? {};
 
-      if (strike_count >= 5 && !suspended_at) {
+      if (strike_count === 5 && !suspended_at) {
         // Suspend the mechanic's account
         await query(
           `UPDATE mechanics
