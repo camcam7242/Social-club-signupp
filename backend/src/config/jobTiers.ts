@@ -6,6 +6,7 @@ export const JOB_TYPES = [
   'wiper_blades',
   'air_filter',
   'jump_start',
+  'locksmith',
   'engine_diagnostic',
   'transmission',
   'ac_repair',
@@ -28,6 +29,7 @@ export const BASIC_ALLOWED: JobType[] = [
   'wiper_blades',
   'air_filter',
   'jump_start',
+  'locksmith',
 ];
 
 // Certified mechanics can do everything except master-only jobs
