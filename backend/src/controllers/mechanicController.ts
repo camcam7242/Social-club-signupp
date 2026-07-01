@@ -247,6 +247,10 @@ export const updateJobStatus = async (req: Request, res: Response, next: NextFun
     // Rating prompt: store a scheduled_push record for a worker/cron to send
     // (in-process setTimeout is lost on restart and doesn't scale)
     if (status === 'completed') {
+      // Record mechanic in customer's history
+      const { recordMechanicHistory } = await import('./jobController');
+      await recordMechanicHistory(job.customer_id, mechanic.rows[0].id);
+
       await query(
         `INSERT INTO scheduled_pushes (user_id, send_at, title, body, data)
          VALUES ($1, NOW() + INTERVAL '30 minutes', $2, $3, $4)
