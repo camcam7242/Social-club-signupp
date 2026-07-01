@@ -25,14 +25,43 @@ export const submitReview = async (req: Request, res: Response, next: NextFuncti
       [job_id, customerId, jobRows[0].mechanic_id, rating, comment]
     );
 
+    const mechanicId = jobRows[0].mechanic_id;
+
     // Update mechanic average rating
     await query(
       `UPDATE mechanics SET
         rating = (SELECT AVG(rating) FROM reviews WHERE mechanic_id = $1),
         review_count = (SELECT COUNT(*) FROM reviews WHERE mechanic_id = $1)
        WHERE id = $1`,
-      [jobRows[0].mechanic_id]
+      [mechanicId]
     );
+
+    // 5-strike policy: rating <= 2 earns a strike
+    if (rating <= 2) {
+      const { rows: strikeRows } = await query(
+        `UPDATE mechanics
+         SET strike_count = strike_count + 1
+         WHERE id = $1
+         RETURNING strike_count, user_id`,
+        [mechanicId]
+      );
+
+      if (strikeRows[0]?.strike_count >= 5 && !strikeRows[0]?.suspended_at) {
+        // Suspend the mechanic's account
+        await query(
+          `UPDATE mechanics
+           SET suspended_at = NOW(),
+               suspension_reason = '5 low-rated reviews (≤2 stars)',
+               is_available = FALSE
+           WHERE id = $1`,
+          [mechanicId]
+        );
+        await query(
+          `UPDATE users SET is_active = FALSE WHERE id = $1`,
+          [strikeRows[0].user_id]
+        );
+      }
+    }
 
     res.status(201).json(rows[0]);
   } catch (err) {

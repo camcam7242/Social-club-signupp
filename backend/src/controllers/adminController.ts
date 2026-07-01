@@ -84,6 +84,47 @@ export const getAnalytics = async (_req: Request, res: Response, next: NextFunct
   }
 };
 
+export const getSuspendedMechanics = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { rows } = await query(
+      `SELECT m.id, m.strike_count, m.suspended_at, m.suspension_reason,
+              u.email, u.id AS user_id, u.is_active
+       FROM mechanics m
+       JOIN users u ON u.id = m.user_id
+       WHERE m.strike_count > 0 OR m.suspended_at IS NOT NULL
+       ORDER BY m.strike_count DESC, m.suspended_at DESC`
+    );
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const clearMechanicStrikes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { mechanicId } = req.params;
+    const { rows } = await query(
+      `UPDATE mechanics
+       SET strike_count = 0, suspended_at = NULL, suspension_reason = NULL,
+           updated_at = NOW()
+       WHERE id = $1
+       RETURNING id, strike_count, user_id`,
+      [mechanicId]
+    );
+    if (!rows.length) throw new AppError('Mechanic not found', 404);
+
+    // Reinstate the user account
+    await query(
+      'UPDATE users SET is_active = TRUE, updated_at = NOW() WHERE id = $1',
+      [rows[0].user_id]
+    );
+
+    res.json({ message: 'Strikes cleared and account reinstated', mechanic: rows[0] });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getDisputes = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     // Disputes are payments with 'refunded' or 'failed' status for now
