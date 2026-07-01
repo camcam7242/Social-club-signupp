@@ -50,10 +50,11 @@ export const submitReview = async (req: Request, res: Response, next: NextFuncti
       const { strike_count, user_id, suspended_at } = strikeRows[0] ?? {};
 
       if (strike_count === 5 && !suspended_at) {
-        // Suspend the mechanic's account
+        // Suspend for 90 days
         await query(
           `UPDATE mechanics
            SET suspended_at = NOW(),
+               suspension_ends_at = NOW() + INTERVAL '90 days',
                suspension_reason = '5 low-rated reviews (≤2 stars)',
                is_available = FALSE
            WHERE id = $1`,
@@ -64,8 +65,8 @@ export const submitReview = async (req: Request, res: Response, next: NextFuncti
           [user_id]
         );
         await sendPushToUser(user_id, {
-          title: '⛔ Account Suspended',
-          body: 'You have received 5 low-rated reviews. Your account has been suspended. Please contact support.',
+          title: '⛔ Account Suspended for 90 Days',
+          body: 'You have received 5 low-rated reviews. Your account is suspended for 90 days. You may reapply after your suspension ends.',
           data: { type: 'strike', strike_count, suspended: true },
         });
       } else if (strike_count < 5 && user_id) {

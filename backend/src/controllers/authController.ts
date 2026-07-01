@@ -99,7 +99,31 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     );
     const user = rows[0];
     if (!user) throw new AppError('Invalid credentials', 401);
-    if (!user.is_active) throw new AppError('Account suspended', 403);
+
+    // Auto-reinstate mechanic if 90-day suspension has expired
+    if (!user.is_active && user.role === 'mechanic') {
+      const { rows: mechRows } = await query(
+        `SELECT suspension_ends_at FROM mechanics WHERE user_id = $1`,
+        [user.id]
+      );
+      const endsAt = mechRows[0]?.suspension_ends_at;
+      if (endsAt && new Date(endsAt) <= new Date()) {
+        await query(
+          `UPDATE mechanics
+           SET suspended_at = NULL, suspension_ends_at = NULL,
+               suspension_reason = NULL, strike_count = 0, updated_at = NOW()
+           WHERE user_id = $1`,
+          [user.id]
+        );
+        await query(
+          `UPDATE users SET is_active = TRUE, updated_at = NOW() WHERE id = $1`,
+          [user.id]
+        );
+        user.is_active = true;
+      }
+    }
+
+    if (!user.is_active) throw new AppError('Account suspended for 90 days due to low ratings. Please contact support.', 403);
 
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) throw new AppError('Invalid credentials', 401);
@@ -120,6 +144,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
       );
       mechanic_strike_count = mRows[0]?.strike_count ?? 0;
     }
+
 
     res.json({
       accessToken,

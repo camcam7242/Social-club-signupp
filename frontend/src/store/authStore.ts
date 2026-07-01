@@ -44,9 +44,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const remaining = 5 - count;
       const title = count >= 4 ? '🚨 Final Warning' : `⚠️ Strike Warning (${count}/5)`;
       const message =
-        count >= 5
-          ? 'Your account has been suspended due to 5 low-rated reviews. Please contact support.'
-          : count === 4
+        count === 4
           ? `You have ${count} strikes. ONE more low-rated review (1–2 stars) will immediately suspend your account.`
           : `You have ${count} of 5 strikes. ${remaining} more low-rated review${remaining !== 1 ? 's' : ''} will suspend your account. Please maintain high service quality.`;
       setTimeout(() => Alert.alert(title, message, [{ text: 'Understood' }]), 800);
