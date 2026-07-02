@@ -55,6 +55,16 @@ export default function ProfileScreen() {
           <Text style={styles.menuText}>Promo Code</Text>
           <Text style={styles.menuArrow}>›</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/legal/terms')}>
+          <Text style={styles.menuIcon}>📋</Text>
+          <Text style={styles.menuText}>Terms of Service</Text>
+          <Text style={styles.menuArrow}>›</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/legal/privacy')}>
+          <Text style={styles.menuIcon}>🔒</Text>
+          <Text style={styles.menuText}>Privacy Policy</Text>
+          <Text style={styles.menuArrow}>›</Text>
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>

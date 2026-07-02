@@ -59,6 +59,8 @@ export default function RootLayout() {
           <Stack.Screen name="receipt/[jobId]" options={{ headerShown: true, title: 'Receipt' }} />
           <Stack.Screen name="promo" options={{ headerShown: true, title: 'Promo Code' }} />
           <Stack.Screen name="my-mechanics" options={{ headerShown: true, title: 'My Mechanics' }} />
+          <Stack.Screen name="legal/terms" options={{ headerShown: true, title: 'Terms of Service' }} />
+          <Stack.Screen name="legal/privacy" options={{ headerShown: true, title: 'Privacy Policy' }} />
         </Stack>
       </QueryClientProvider>
     </StripeProvider>
