@@ -16,6 +16,8 @@ export const JOB_TYPES = [
   'exhaust',
   'coolant',
   'other',
+  'diesel_repair',
+  'diesel_diagnostic',
 ] as const;
 
 export type JobType = typeof JOB_TYPES[number];
@@ -42,11 +44,17 @@ export const CERTIFIED_ALLOWED: JobType[] = [
   'electrical',
   'coolant',
   'exhaust',
+  'diesel_repair',
   'other',
 ];
 
-// Master mechanics have no restrictions
+// Master-only job types (too specialized for basic/certified)
+export const MASTER_ONLY: JobType[] = [
+  'diesel_diagnostic',
+];
+
 export const canMechanicDoJob = (tier: string, jobType: string): boolean => {
+  if (MASTER_ONLY.includes(jobType as JobType)) return tier === 'master';
   if (tier === 'master') return true;
   if (tier === 'certified') return CERTIFIED_ALLOWED.includes(jobType as JobType);
   return BASIC_ALLOWED.includes(jobType as JobType);

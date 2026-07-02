@@ -14,7 +14,8 @@ const DRAFT_KEY = 'pro_signup_draft';
 const SERVICE_TYPES = [
   'Oil Change', 'Tire Service', 'Battery', 'Brakes',
   'Locksmith', 'Engine Diagnostics', 'AC Repair', 'Transmission',
-  'Electrical', 'Suspension', 'Exhaust', 'General Repair',
+  'Electrical', 'Suspension', 'Exhaust', 'Diesel Repair',
+  'Diesel Diagnostic', 'General Repair',
 ];
 
 const STEPS = ['Account', 'Business', 'Tier', 'Services', 'Done'];
