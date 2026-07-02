@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity,
-  KeyboardAvoidingView, Platform, ActivityIndicator,
+  KeyboardAvoidingView, Platform, ActivityIndicator, Linking, Alert,
 } from 'react-native';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
@@ -96,6 +96,33 @@ export default function ChatScreen() {
     sendMutation.mutate(trimmed);
   }, [text, sendMutation]);
 
+  const handleFindParts = useCallback(() => {
+    Alert.prompt(
+      '🔧 Find Parts',
+      'What part do you need? (e.g. "2019 Toyota Camry oil filter")',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Search Amazon',
+          onPress: (query) => {
+            if (!query?.trim()) return;
+            const url = `https://www.amazon.com/s?k=${encodeURIComponent(query.trim())}+auto+parts`;
+            Linking.openURL(url);
+          },
+        },
+        {
+          text: 'Search AutoZone',
+          onPress: (query) => {
+            if (!query?.trim()) return;
+            const url = `https://www.autozone.com/searchresult?searchtext=${encodeURIComponent(query.trim())}`;
+            Linking.openURL(url);
+          },
+        },
+      ],
+      'plain-text'
+    );
+  }, []);
+
   const renderMessage = ({ item }: { item: ChatMessage }) => {
     const isMe = item.sender_id === user?.id;
     const time = new Date(item.created_at).toLocaleTimeString([], {
@@ -139,6 +166,10 @@ export default function ChatScreen() {
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
         />
       )}
+
+      <TouchableOpacity style={styles.partsBtn} onPress={handleFindParts}>
+        <Text style={styles.partsBtnText}>🔧 Find Parts</Text>
+      </TouchableOpacity>
 
       <View style={styles.inputRow}>
         <TextInput
@@ -202,4 +233,10 @@ const styles = StyleSheet.create({
   },
   sendBtnDisabled: { backgroundColor: '#93c5fd' },
   sendBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
+  partsBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: '#1e293b', marginHorizontal: 12, marginBottom: 6,
+    borderRadius: 10, paddingVertical: 10, borderWidth: 1, borderColor: '#334155',
+  },
+  partsBtnText: { color: '#f59e0b', fontWeight: '700', fontSize: 14 },
 });
