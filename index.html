@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fable — Join the Club</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Join Fable</h1>
+    <p>Sign up to become a member and connect with like-minded individuals!</p>
+    <form id="signupForm">
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" name="name" required placeholder="Enter your name">
+
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email" required placeholder="Enter your email">
+
+      <label for="phone">Phone Number (Optional):</label>
+      <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+
+      <label for="interests">Your Interests:</label>
+      <select id="interests" name="interests" required>
+        <option value="" disabled selected>Select your interests</option>
+        <option value="networking">Networking</option>
+        <option value="events">Events</option>
+        <option value="volunteering">Volunteering</option>
+        <option value="socializing">Socializing</option>
+      </select>
+
+      <label for="password">Create a Password:</label>
+      <input type="password" id="password" name="password" required placeholder="Enter a secure password">
+
+      <button type="submit">Sign Up</button>
+    </form>
+    <p id="successMessage" class="hidden">Thank you for signing up! We'll be in touch soon.</p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
