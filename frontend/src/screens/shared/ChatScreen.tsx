@@ -81,11 +81,22 @@ export default function ChatScreen() {
         prev.map((m) => (m.id === ctx?.optimistic.id ? res.data : m))
       );
     },
-    onError: (_err, _vars, ctx) => {
+    onError: (err: any, _vars, ctx) => {
       // Remove optimistic entry on error
       qc.setQueryData<ChatMessage[]>(['chat', jobId], (prev = []) =>
         prev.filter((m) => m.id !== ctx?.optimistic.id)
       );
+      const data = err?.response?.data;
+      if (data?.code === 'OFF_PLATFORM_BLOCKED') {
+        const remaining = data.violations_remaining ?? 0;
+        Alert.alert(
+          '⛔ Message Blocked',
+          `${data.error}\n\n${remaining} more violation${remaining !== 1 ? 's' : ''} will suspend your account.`,
+          [{ text: 'Understood' }]
+        );
+      } else if (data?.code === 'ACCOUNT_SUSPENDED') {
+        Alert.alert('Account Suspended', data.error, [{ text: 'OK' }]);
+      }
     },
   });
 
@@ -103,20 +114,12 @@ export default function ChatScreen() {
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Search Amazon',
-          onPress: (query) => {
-            if (!query?.trim()) return;
-            const url = `https://www.amazon.com/s?k=${encodeURIComponent(query.trim())}+auto+parts`;
-            Linking.openURL(url);
-          },
+          text: 'Amazon',
+          onPress: (q) => q?.trim() && Linking.openURL(`https://www.amazon.com/s?k=${encodeURIComponent(q.trim())}+auto+parts`),
         },
         {
-          text: 'Search AutoZone',
-          onPress: (query) => {
-            if (!query?.trim()) return;
-            const url = `https://www.autozone.com/searchresult?searchtext=${encodeURIComponent(query.trim())}`;
-            Linking.openURL(url);
-          },
+          text: 'AutoZone',
+          onPress: (q) => q?.trim() && Linking.openURL(`https://www.autozone.com/searchresult?searchtext=${encodeURIComponent(q.trim())}`),
         },
       ],
       'plain-text'
@@ -168,7 +171,7 @@ export default function ChatScreen() {
       )}
 
       <TouchableOpacity style={styles.partsBtn} onPress={handleFindParts}>
-        <Text style={styles.partsBtnText}>🔧 Find Parts</Text>
+        <Text style={styles.partsBtnText}>🔧 Find Parts for This Job</Text>
       </TouchableOpacity>
 
       <View style={styles.inputRow}>
@@ -234,7 +237,11 @@ const styles = StyleSheet.create({
   sendBtnDisabled: { backgroundColor: '#93c5fd' },
   sendBtnText: { color: '#fff', fontWeight: '700', fontSize: 14 },
   partsBtn: {
+<<<<<<< HEAD
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+=======
+    alignItems: 'center', justifyContent: 'center',
+>>>>>>> feature/off-platform-protection
     backgroundColor: '#1e293b', marginHorizontal: 12, marginBottom: 6,
     borderRadius: 10, paddingVertical: 10, borderWidth: 1, borderColor: '#334155',
   },
