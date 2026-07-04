@@ -81,11 +81,22 @@ export default function ChatScreen() {
         prev.map((m) => (m.id === ctx?.optimistic.id ? res.data : m))
       );
     },
-    onError: (_err, _vars, ctx) => {
+    onError: (err: any, _vars, ctx) => {
       // Remove optimistic entry on error
       qc.setQueryData<ChatMessage[]>(['chat', jobId], (prev = []) =>
         prev.filter((m) => m.id !== ctx?.optimistic.id)
       );
+      const data = err?.response?.data;
+      if (data?.code === 'OFF_PLATFORM_BLOCKED') {
+        const remaining = data.violations_remaining ?? 0;
+        Alert.alert(
+          '⛔ Message Blocked',
+          `${data.error}\n\n${remaining} more violation${remaining !== 1 ? 's' : ''} will suspend your account.`,
+          [{ text: 'Understood' }]
+        );
+      } else if (data?.code === 'ACCOUNT_SUSPENDED') {
+        Alert.alert('Account Suspended', data.error, [{ text: 'OK' }]);
+      }
     },
   });
 
