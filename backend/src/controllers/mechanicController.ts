@@ -114,7 +114,7 @@ export const submitQuote = async (req: Request, res: Response, next: NextFunctio
     const userId = req.user!.userId;
     const { request_id, price, estimated_duration_hours, notes } = req.body;
 
-    const mechanic = await query('SELECT id, tier FROM mechanics WHERE user_id = $1 AND verified = TRUE', [userId]);
+    const mechanic = await query('SELECT id, tier, has_garage FROM mechanics WHERE user_id = $1 AND verified = TRUE', [userId]);
     if (!mechanic.rows.length) throw new AppError('Mechanic not verified', 403);
 
     const serviceRequest = await query(
@@ -123,13 +123,17 @@ export const submitQuote = async (req: Request, res: Response, next: NextFunctio
     );
     if (!serviceRequest.rows.length) throw new AppError('Request not available', 404);
 
-    // Enforce tier restrictions
-    const { canMechanicDoJob } = await import('../config/jobTiers');
+    // Enforce tier + heavy-equipment restrictions
+    const { canMechanicDoJob, HEAVY_EQUIPMENT_REQUIRED } = await import('../config/jobTiers');
     const tier = mechanic.rows[0].tier || 'basic';
+    const hasGarage = mechanic.rows[0].has_garage === true;
     const jobType = serviceRequest.rows[0].service_type;
-    if (!canMechanicDoJob(tier, jobType)) {
+    if (!canMechanicDoJob(tier, jobType, hasGarage)) {
+      const needsGarage = HEAVY_EQUIPMENT_REQUIRED.includes(jobType);
       throw new AppError(
-        `Your ${tier} tier does not allow quoting on "${jobType}" jobs. Upload certifications to unlock more job types.`,
+        needsGarage && !hasGarage
+          ? `"${jobType}" jobs require a garage or heavy equipment. Enable "I have a garage / heavy equipment" on your profile if you have one.`
+          : `Your ${tier} tier does not allow quoting on "${jobType}" jobs. Upload certifications to unlock more job types.`,
         403
       );
     }

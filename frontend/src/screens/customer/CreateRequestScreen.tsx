@@ -13,7 +13,8 @@ import { Vehicle } from '../../types';
 const SERVICE_TYPES = [
   'Oil Change', 'Tire Change', 'Battery Replacement',
   'Brake Service', 'Locksmith', 'Engine Diagnostics',
-  'AC Repair', 'Transmission', 'Diesel Repair', 'Diesel Diagnostic', 'Other',
+  'AC Repair', 'Transmission Service', 'Transmission Rebuild/Replace',
+  'Diesel Repair', 'Diesel Diagnostic', 'Other',
 ];
 
 export default function CreateRequestScreen() {

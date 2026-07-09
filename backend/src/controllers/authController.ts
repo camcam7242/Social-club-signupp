@@ -55,6 +55,7 @@ export const registerProfessional = async (req: Request, res: Response, next: Ne
       service_radius_km = 25,
       tier = 'basic',
       specialties = [],
+      has_garage = false,
     } = req.body;
 
     if (!['basic', 'certified', 'master'].includes(tier)) {
@@ -73,9 +74,9 @@ export const registerProfessional = async (req: Request, res: Response, next: Ne
     const user = rows[0];
 
     await query(
-      `INSERT INTO mechanics (user_id, business_name, bio, service_radius_km, tier, specialties)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      [user.id, business_name, bio, service_radius_km, tier, specialties]
+      `INSERT INTO mechanics (user_id, business_name, bio, service_radius_km, tier, specialties, has_garage)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [user.id, business_name, bio, service_radius_km, tier, specialties, has_garage === true]
     );
 
     const accessToken = signAccess(user.id, 'mechanic');

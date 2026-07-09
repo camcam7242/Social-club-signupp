@@ -67,6 +67,7 @@ export default function ProfessionalSignupScreen() {
 
   // Step 3 — Services
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [hasGarage, setHasGarage] = useState(false);
 
   // Restore draft on mount
   useEffect(() => {
@@ -129,6 +130,7 @@ export default function ProfessionalSignupScreen() {
         service_radius_km: parseInt(radius) || 25,
         tier,
         specialties: selectedServices,
+        has_garage: hasGarage,
       });
       await SecureStore.setItemAsync('accessToken', data.accessToken);
       await SecureStore.setItemAsync('refreshToken', data.refreshToken);
@@ -282,6 +284,19 @@ export default function ProfessionalSignupScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+
+            <TouchableOpacity
+              style={[styles.garageToggle, hasGarage && styles.garageToggleActive]}
+              onPress={() => setHasGarage(g => !g)}
+            >
+              <Text style={styles.garageIcon}>{hasGarage ? '✅' : '🏚️'}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.garageTitle}>I have a garage / heavy equipment</Text>
+                <Text style={styles.garageSub}>
+                  Unlocks big jobs like transmission rebuilds. Requires a garage, trailer lift, or transmission jack.
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         )}
 
@@ -375,6 +390,15 @@ const styles = StyleSheet.create({
   tierSubtitle: { fontSize: 12, color: '#64748b', marginBottom: 6, fontWeight: '500' },
   tierDesc: { fontSize: 13, color: '#94a3b8', lineHeight: 18 },
   servicesGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  garageToggle: {
+    flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 20,
+    backgroundColor: '#1e293b', borderRadius: 12, padding: 14,
+    borderWidth: 1.5, borderColor: '#334155',
+  },
+  garageToggleActive: { borderColor: '#10b981', backgroundColor: '#123c2e' },
+  garageIcon: { fontSize: 24 },
+  garageTitle: { color: '#f1f5f9', fontWeight: '700', fontSize: 14 },
+  garageSub: { color: '#94a3b8', fontSize: 12, marginTop: 2, lineHeight: 16 },
   serviceChip: {
     paddingHorizontal: 14, paddingVertical: 10, borderRadius: 20,
     borderWidth: 1.5, borderColor: '#334155', backgroundColor: '#0f172a',

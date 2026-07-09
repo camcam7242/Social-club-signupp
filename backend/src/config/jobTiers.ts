@@ -8,7 +8,9 @@ export const JOB_TYPES = [
   'jump_start',
   'locksmith',
   'engine_diagnostic',
-  'transmission',
+  'transmission',          // legacy — treated as transmission_service
+  'transmission_service',  // fluid, solenoids, seals — mobile-friendly
+  'transmission_major',    // rebuild/replace — needs garage or heavy equipment
   'ac_repair',
   'suspension',
   'electrical',
@@ -39,6 +41,7 @@ export const CERTIFIED_ALLOWED: JobType[] = [
   ...BASIC_ALLOWED,
   'engine_diagnostic',
   'transmission',
+  'transmission_service',
   'ac_repair',
   'suspension',
   'electrical',
@@ -51,9 +54,20 @@ export const CERTIFIED_ALLOWED: JobType[] = [
 // Master-only job types (too specialized for basic/certified)
 export const MASTER_ONLY: JobType[] = [
   'diesel_diagnostic',
+  'transmission_major',
 ];
 
-export const canMechanicDoJob = (tier: string, jobType: string): boolean => {
+// Jobs that also require the mechanic to have a garage or heavy equipment
+export const HEAVY_EQUIPMENT_REQUIRED: JobType[] = [
+  'transmission_major',
+];
+
+export const canMechanicDoJob = (
+  tier: string,
+  jobType: string,
+  hasGarage: boolean = false
+): boolean => {
+  if (HEAVY_EQUIPMENT_REQUIRED.includes(jobType as JobType) && !hasGarage) return false;
   if (MASTER_ONLY.includes(jobType as JobType)) return tier === 'master';
   if (tier === 'master') return true;
   if (tier === 'certified') return CERTIFIED_ALLOWED.includes(jobType as JobType);

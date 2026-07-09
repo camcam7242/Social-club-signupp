@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { query } from '../config/database';
 import { AppError } from '../middleware/errorHandler';
 import { getIO } from '../services/socketService';
-import { BASIC_ALLOWED, CERTIFIED_ALLOWED } from '../config/jobTiers';
+import { BASIC_ALLOWED, CERTIFIED_ALLOWED, HEAVY_EQUIPMENT_REQUIRED } from '../config/jobTiers';
 
 export const createRequest = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -48,22 +48,27 @@ export const getRequests = async (req: Request, res: Response, next: NextFunctio
         [userId]
       ));
     } else if (role === 'mechanic') {
-      // Filter open requests by what this mechanic's tier allows
-      const mechResult = await query('SELECT tier FROM mechanics WHERE user_id = $1', [userId]);
+      // Filter open requests by what this mechanic's tier + equipment allows
+      const mechResult = await query('SELECT tier, has_garage FROM mechanics WHERE user_id = $1', [userId]);
       const tier = mechResult.rows[0]?.tier || 'basic';
+      const hasGarage = mechResult.rows[0]?.has_garage === true;
       const allowed = tier === 'master' ? null : tier === 'certified' ? CERTIFIED_ALLOWED : BASIC_ALLOWED;
+      const excluded = hasGarage ? [] : HEAVY_EQUIPMENT_REQUIRED;
       if (allowed) {
         ({ rows } = await query(
           `SELECT sr.*, v.year, v.make, v.model FROM service_requests sr
            JOIN vehicles v ON v.id = sr.vehicle_id
-           WHERE sr.status = 'open' AND sr.service_type = ANY($1) ORDER BY sr.created_at DESC`,
-          [allowed]
+           WHERE sr.status = 'open' AND sr.service_type = ANY($1)
+             AND NOT (sr.service_type = ANY($2)) ORDER BY sr.created_at DESC`,
+          [allowed, excluded]
         ));
       } else {
         ({ rows } = await query(
           `SELECT sr.*, v.year, v.make, v.model FROM service_requests sr
            JOIN vehicles v ON v.id = sr.vehicle_id
-           WHERE sr.status = 'open' ORDER BY sr.created_at DESC`
+           WHERE sr.status = 'open'
+             AND NOT (sr.service_type = ANY($1)) ORDER BY sr.created_at DESC`,
+          [excluded]
         ));
       }
     } else {
