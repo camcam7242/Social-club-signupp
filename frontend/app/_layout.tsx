@@ -61,6 +61,7 @@ export default function RootLayout() {
           <Stack.Screen name="my-mechanics" options={{ headerShown: true, title: 'My Mechanics' }} />
           <Stack.Screen name="legal/terms" options={{ headerShown: true, title: 'Terms of Service' }} />
           <Stack.Screen name="legal/privacy" options={{ headerShown: true, title: 'Privacy Policy' }} />
+          <Stack.Screen name="diagnosis" options={{ headerShown: true, title: 'AI Diagnosis' }} />
         </Stack>
       </QueryClientProvider>
     </StripeProvider>

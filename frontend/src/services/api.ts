@@ -134,6 +134,12 @@ export const jobNotesApi = {
   add: (jobId: string, note: string) => api.post(`/jobs/${jobId}/notes`, { note }),
 };
 
+// AI diagnosis
+export const diagnosisApi = {
+  diagnose: (data: { symptoms: string; make?: string; model?: string; year?: string }) =>
+    api.post('/diagnosis', data),
+};
+
 // Promo codes
 export const promoApi = {
   validate: (code: string) => api.post('/promo/validate', { code }),
