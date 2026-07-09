@@ -75,7 +75,12 @@ if (!allowedOrigin && process.env.NODE_ENV === 'production') {
 app.use(cors({ origin: allowedOrigin || '*', credentials: !!allowedOrigin }));
 
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
-app.use(express.json({ limit: '1mb' }));
+// quote-check accepts a base64 photo, parsed with its own 15mb limit in the route
+const jsonParser = express.json({ limit: '1mb' });
+app.use((req, res, next) => {
+  if (req.path === '/api/diagnosis/quote-check') return next();
+  return jsonParser(req, res, next);
+});
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // Apply rate limiting to all API routes

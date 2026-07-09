@@ -31,6 +31,11 @@ export default function ProfileScreen() {
               <Text style={styles.menuText}>AI Diagnosis</Text>
               <Text style={styles.menuArrow}>›</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/quote-check')}>
+              <Text style={styles.menuIcon}>🧾</Text>
+              <Text style={styles.menuText}>Rip-Off Check</Text>
+              <Text style={styles.menuArrow}>›</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/my-mechanics')}>
               <Text style={styles.menuIcon}>❤️</Text>
               <Text style={styles.menuText}>My Mechanics</Text>

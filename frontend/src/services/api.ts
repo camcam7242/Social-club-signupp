@@ -138,6 +138,8 @@ export const jobNotesApi = {
 export const diagnosisApi = {
   diagnose: (data: { symptoms: string; make?: string; model?: string; year?: string }) =>
     api.post('/diagnosis', data),
+  checkQuote: (data: { image_base64: string; media_type?: string }) =>
+    api.post('/diagnosis/quote-check', data, { timeout: 120000 }),
 };
 
 // Promo codes
