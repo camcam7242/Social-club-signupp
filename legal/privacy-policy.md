@@ -1,4 +1,4 @@
-# MechMarket Privacy Policy
+# Curbly Privacy Policy
 
 **Last Updated: July 2, 2026**
 **Effective Date: July 2, 2026**
@@ -7,7 +7,7 @@
 
 ## 1. INTRODUCTION
 
-MechMarket ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use the MechMarket mobile application ("App").
+Curbly ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use the Curbly mobile application ("App").
 
 **Please read this policy carefully. By using the App, you consent to the practices described in this Privacy Policy.**
 
@@ -79,12 +79,12 @@ All service providers are contractually required to protect your information and
 ### 4.3 For Legal Reasons
 We may disclose your information if required to:
 - Comply with a subpoena, court order, or legal process
-- Protect the rights, property, or safety of MechMarket, our users, or the public
+- Protect the rights, property, or safety of Curbly, our users, or the public
 - Detect, prevent, or address fraud or security issues
 - Enforce our Terms of Service
 
 ### 4.4 Business Transfers
-If MechMarket is acquired, merged, or sells assets, your information may be transferred as part of that transaction. We will notify you before your information becomes subject to a different privacy policy.
+If Curbly is acquired, merged, or sells assets, your information may be transferred as part of that transaction. We will notify you before your information becomes subject to a different privacy policy.
 
 ### 4.5 With Your Consent
 We may share your information for any other purpose with your explicit consent.
@@ -93,7 +93,7 @@ We may share your information for any other purpose with your explicit consent.
 
 ## 5. LOCATION DATA
 
-Location data is central to how MechMarket works. Specifically:
+Location data is central to how Curbly works. Specifically:
 
 - **Customers:** We collect your location to find nearby Mechanics and to share with your assigned Mechanic so they can navigate to you
 - **Mechanics:** We collect your real-time location to show Customers where you are during an active job and to show your availability radius
@@ -144,7 +144,7 @@ We implement industry-standard security measures including:
 
 ## 9. CHILDREN'S PRIVACY
 
-The App is not directed to children under 18 years of age. We do not knowingly collect personal information from children under 18. If you believe we have inadvertently collected such information, contact us immediately at support@mechmarket.app and we will delete it.
+The App is not directed to children under 18 years of age. We do not knowingly collect personal information from children under 18. If you believe we have inadvertently collected such information, contact us immediately at support@curbly.app and we will delete it.
 
 ---
 
@@ -156,7 +156,7 @@ Depending on your location, you may have the following rights:
 You may access and update your account information at any time through the App's profile settings.
 
 ### 10.2 Data Deletion
-You may request deletion of your account and personal data by contacting support@mechmarket.app. Note that some data (transaction records) must be retained for legal compliance.
+You may request deletion of your account and personal data by contacting support@curbly.app. Note that some data (transaction records) must be retained for legal compliance.
 
 ### 10.3 Opt-Out of Marketing
 You may opt out of marketing emails by clicking "unsubscribe" in any email or contacting us. You cannot opt out of transactional communications (e.g., payment receipts, job updates).
@@ -178,7 +178,7 @@ If you are a California resident, you have the following rights under the Califo
 - **Right to Opt-Out of Sale:** We do not sell personal information. No opt-out is needed.
 - **Right to Non-Discrimination:** We will not discriminate against you for exercising your CCPA rights
 
-To exercise your CCPA rights, contact us at support@mechmarket.app with the subject line "CCPA Request."
+To exercise your CCPA rights, contact us at support@curbly.app with the subject line "CCPA Request."
 
 **California Shine the Light:** California Civil Code Section 1798.83 allows California residents to request information about sharing personal information with third parties for direct marketing. We do not share personal information for third-party direct marketing.
 
@@ -186,7 +186,7 @@ To exercise your CCPA rights, contact us at support@mechmarket.app with the subj
 
 ## 12. NEVADA RESIDENTS
 
-Nevada residents may opt out of the sale of personal information. We do not sell personal information. For questions, contact support@mechmarket.app.
+Nevada residents may opt out of the sale of personal information. We do not sell personal information. For questions, contact support@curbly.app.
 
 ---
 
@@ -203,7 +203,7 @@ If you are located in the European Economic Area (EEA), United Kingdom, or Switz
 - **Right to Object:** Object to processing based on legitimate interests
 - **Right to Withdraw Consent:** Where processing is based on consent, you may withdraw at any time
 
-To exercise these rights, contact support@mechmarket.app. You also have the right to lodge a complaint with your local data protection authority.
+To exercise these rights, contact support@curbly.app. You also have the right to lodge a complaint with your local data protection authority.
 
 ---
 
@@ -223,12 +223,12 @@ We may update this Privacy Policy from time to time. We will notify you of mater
 
 If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, contact us:
 
-**MechMarket Privacy Team**
-Email: support@mechmarket.app
+**Curbly Privacy Team**
+Email: support@curbly.app
 Subject Line: Privacy Request
 
 We will respond to all requests within **30 days**.
 
 ---
 
-*By using MechMarket, you acknowledge that you have read and understood this Privacy Policy.*
+*By using Curbly, you acknowledge that you have read and understood this Privacy Policy.*

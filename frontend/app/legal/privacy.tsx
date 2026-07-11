@@ -20,7 +20,7 @@ export default function PrivacyScreen() {
 const SECTIONS = [
   {
     heading: '1. Introduction',
-    body: 'MechMarket is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use the App. By using the App, you consent to the practices described here.',
+    body: 'Curbly is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use the App. By using the App, you consent to the practices described here.',
   },
   {
     heading: '2. Information We Collect',
@@ -36,7 +36,7 @@ const SECTIONS = [
   },
   {
     heading: '5. Location Data',
-    body: 'Location data is essential to MechMarket. Customer location is shared with the assigned Mechanic for navigation. Mechanic location is shared with the Customer during an active job. We do not sell location data. Disabling location permissions will prevent the App from functioning.',
+    body: 'Location data is essential to Curbly. Customer location is shared with the assigned Mechanic for navigation. Mechanic location is shared with the Customer during an active job. We do not sell location data. Disabling location permissions will prevent the App from functioning.',
   },
   {
     heading: '6. Data Retention',
@@ -48,19 +48,19 @@ const SECTIONS = [
   },
   {
     heading: '8. Children\'s Privacy',
-    body: 'The App is not directed to children under 18. We do not knowingly collect information from children under 18. If you believe we have collected such information, contact support@mechmarket.app immediately.',
+    body: 'The App is not directed to children under 18. We do not knowingly collect information from children under 18. If you believe we have collected such information, contact support@curbly.app immediately.',
   },
   {
     heading: '9. Your Rights',
-    body: 'You may access and update your account info in the App settings. You may request account deletion by contacting support@mechmarket.app. You may opt out of marketing communications at any time. You cannot opt out of transactional communications (payment receipts, job updates).',
+    body: 'You may access and update your account info in the App settings. You may request account deletion by contacting support@curbly.app. You may opt out of marketing communications at any time. You cannot opt out of transactional communications (payment receipts, job updates).',
   },
   {
     heading: '10. California Residents (CCPA)',
-    body: 'California residents have the right to know what personal information we collect, request deletion, and opt out of sale (we do not sell personal information). To exercise CCPA rights, email support@mechmarket.app with subject "CCPA Request."',
+    body: 'California residents have the right to know what personal information we collect, request deletion, and opt out of sale (we do not sell personal information). To exercise CCPA rights, email support@curbly.app with subject "CCPA Request."',
   },
   {
     heading: '11. European Users (GDPR)',
-    body: 'EEA, UK, and Swiss residents have rights to access, rectify, erase, restrict, and port their data, and to object to processing. To exercise GDPR rights, email support@mechmarket.app. You may also lodge a complaint with your local data protection authority.',
+    body: 'EEA, UK, and Swiss residents have rights to access, rectify, erase, restrict, and port their data, and to object to processing. To exercise GDPR rights, email support@curbly.app. You may also lodge a complaint with your local data protection authority.',
   },
   {
     heading: '12. Changes to This Policy',
@@ -68,7 +68,7 @@ const SECTIONS = [
   },
   {
     heading: '13. Contact Us',
-    body: 'For privacy questions or requests, email support@mechmarket.app with subject "Privacy Request." We will respond within 30 days.',
+    body: 'For privacy questions or requests, email support@curbly.app with subject "Privacy Request." We will respond within 30 days.',
   },
 ];
 

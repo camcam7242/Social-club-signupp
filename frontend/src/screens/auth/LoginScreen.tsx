@@ -35,7 +35,7 @@ export default function LoginScreen() {
           <View style={styles.logoCircle}>
             <Text style={styles.logoEmoji}>🔧</Text>
           </View>
-          <Text style={styles.appName}>MechMarket</Text>
+          <Text style={styles.appName}>Curbly</Text>
         </View>
 
         <Text style={styles.title}>Welcome Back</Text>

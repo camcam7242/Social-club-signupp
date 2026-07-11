@@ -40,7 +40,7 @@ export default function PaymentScreen() {
 
         // Init Stripe payment sheet (covers cards + Apple Pay + Google Pay)
         const { error } = await initPaymentSheet({
-          merchantDisplayName: 'Mechanic Marketplace',
+          merchantDisplayName: 'Curbly',
           paymentIntentClientSecret: data.clientSecret,
           applePay: {
             merchantCountryCode: 'US',

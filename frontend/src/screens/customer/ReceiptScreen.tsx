@@ -53,7 +53,7 @@ export default function ReceiptScreen() {
         {/* Header */}
         <View style={styles.receiptHeader}>
           <Text style={styles.logo}>🔧</Text>
-          <Text style={styles.companyName}>Mechanic Marketplace</Text>
+          <Text style={styles.companyName}>Curbly</Text>
           <Text style={styles.receiptLabel}>SERVICE RECEIPT</Text>
         </View>
 

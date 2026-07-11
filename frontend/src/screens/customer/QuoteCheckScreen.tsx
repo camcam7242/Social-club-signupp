@@ -157,7 +157,7 @@ export default function QuoteCheckScreen() {
           )}
 
           <Text style={styles.disclaimer}>
-            AI estimate based on typical US market rates — prices vary by region and vehicle. Get a quote from a MechMarket mechanic to compare.
+            AI estimate based on typical US market rates — prices vary by region and vehicle. Get a quote from a Curbly mechanic to compare.
           </Text>
         </View>
       )}
